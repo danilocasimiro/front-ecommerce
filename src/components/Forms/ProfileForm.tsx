@@ -7,7 +7,8 @@ interface Profile {
   id: number,
   name: string,
   user: {
-    email_address: string
+    email_address: string,
+    password: string
   }
 }
 
@@ -19,7 +20,8 @@ export default function ProfileForm({ profile }: { profile: Profile | null | und
   const [formData, setFormData] = useState({
     name: '',
     user: {
-      email_address: ''
+      email_address: '',
+      password: ''
     }
   });
 
@@ -35,7 +37,8 @@ export default function ProfileForm({ profile }: { profile: Profile | null | und
       setFormData({
         name: profile?.name || '',
         user: {
-          email_address: profile?.user?.email_address || ''
+          email_address: profile?.user?.email_address || '',
+          password: profile?.user?.password || ''
         }
       });
     }
@@ -43,23 +46,24 @@ export default function ProfileForm({ profile }: { profile: Profile | null | und
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget;
-
     setFormData((prevData) => ({
       ...prevData,
       name: value,
     }));
   };
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget;
-
+  const handleChange = (fieldName: string) => ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevData) => ({
       ...prevData,
       user: {
-        email_address: value
+        ...prevData.user,
+        [fieldName]: value
       }
     }));
   };
+
+  const handleEmailChange = handleChange('email_address');
+  const handlePasswordChange = handleChange('password');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,11 +89,11 @@ export default function ProfileForm({ profile }: { profile: Profile | null | und
       <div className="row">
         <div className="col-xxl">
           <div className="card mb-4">
-            <div className="card-header d-flex align-items-center justify-content-between">
-              <h5 className="mb-0">Dados do usuário</h5>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
+              <div className="card-header d-flex align-items-center justify-content-between">
+                <h5 className="mb-0">Dados do usuário</h5>
+              </div>
+              <div className="card-body">
                 <div className="row mb-3">
                   <label className="col-sm-2 col-form-label" htmlFor="basic-icon-default-profile">Nome</label>
                   <div className="col-sm-10">
@@ -128,17 +132,34 @@ export default function ProfileForm({ profile }: { profile: Profile | null | und
                     </div>
                   </div>
                 </div>
-
+                <div className="row mb-3">
+                  <label htmlFor="exampleFormControlSelect1" className="col-sm-2 col-form-label">Senha</label>
+                  <div className="col-sm-10">
+                    <div className="input-group input-group-merge">
+                      <span id="basic-icon-default-profile" className="input-group-text"
+                      ><i className="bx bx-buildings"></i></span>
+                      <input
+                        type="password"
+                        id="basic-icon-default-profile"
+                        className="form-control"
+                        placeholder=""
+                        onChange={handlePasswordChange}
+                        aria-label="email@example.com"
+                        aria-describedby="basic-icon-default-profile"
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="row justify-content-end">
                   <div className="col-sm-10">
                     <button type="submit" className="btn btn-primary">Enviar</button>
                   </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 };

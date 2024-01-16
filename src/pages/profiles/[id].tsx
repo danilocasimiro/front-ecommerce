@@ -18,7 +18,8 @@ interface Profile {
   id: number;
   name: string;
   user: {
-    email_address: string;
+    email_address: string,
+    password: string
   }
 }
 
@@ -35,7 +36,7 @@ export default function ProfileEdit() {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchTenant(id, { expand: 'user'});
-          console.log('Result: ', result)
+
           setProfile(result.data);
         } catch (error) {
           console.error('Erro ao obter dados do usuario:', error);
