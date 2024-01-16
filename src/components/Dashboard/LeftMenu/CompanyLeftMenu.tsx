@@ -1,12 +1,32 @@
-import * as React from 'react';
 import { useRouter } from 'next/router';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function CompanyLeftMenu() {
   const router = useRouter();
   const currentPath = router.pathname;
+  const { data: session } = useSession();
+
+  const [userData, setUserData] = useState({
+    company_id: ''
+  });
+
+  useEffect(() => {
+    if (session) {
+      setUserData({
+        company_id: session.user?.company_id || ''
+      });
+    }
+  }, [session]);
 
   return (
     <>
+      <li className={`menu-item ${currentPath.startsWith('/companies') ? 'active' : ''}`}>
+      <a id="companyLink" href={`/companies/${userData.company_id}`} className="menu-link">
+          <i className="menu-icon tf-icons bx bx-home-circle"></i>
+          <div data-i18n="Analytics">Empresa</div>
+        </a>
+      </li>
       <li className={`menu-item ${currentPath.startsWith('/product-types') ? 'active open' : ''}`}>
         <a href="#" className="menu-link menu-toggle">
           <i className="menu-icon tf-icons bx bx-layout"></i>

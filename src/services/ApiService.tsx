@@ -55,9 +55,9 @@ class ApiService {
     }
   }
 
-  async fetchCompany(id: string | string[] | undefined): Promise<AxiosResponse<any>> {
+  async fetchCompany(id: string | string[] | undefined, params: {}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.get('/companies/' + id, this.headers);
+      return await this.api.get('/companies/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro

@@ -17,6 +17,14 @@ import CompanyForm from "@/components/Forms/CompanyForm";
 interface Company {
   id: string;
   name: string;
+  address: {
+    street: string,
+    number: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    zip_code: string,
+  }
 }
 
 export default function CompanyEdit() {
@@ -31,7 +39,7 @@ export default function CompanyEdit() {
       if (status === "authenticated" && session?.token) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchCompany(id);
+          const result = await apiService.fetchCompany(id, { expand: 'address' });
           setCompany(result.data);
         } catch (error) {
           console.error('Erro ao obter dados da empresa:', error);
