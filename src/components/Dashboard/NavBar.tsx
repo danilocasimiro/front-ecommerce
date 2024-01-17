@@ -105,9 +105,15 @@ export default function NavBar() {
                   </a>
                 </li>
                 <li>
+                  <a className="dropdown-item" href="/subscriptions">
+                    <i className="bx bx-cog me-2"></i>
+                    <span className="align-middle">Minhas assinaturas</span>
+                  </a>
+                </li>
+                <li>
                   <a className="dropdown-item" href="#">
                     <i className="bx bx-cog me-2"></i>
-                    <span className="align-middle">Configuração</span>
+                    <span className="align-middle">Configuraçôes</span>
                   </a>
                 </li>
                 <li>

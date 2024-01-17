@@ -217,6 +217,15 @@ class ApiService {
       throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
     }
   }
+
+  async fetchSubscriptions(params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/subscriptions/', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
 }
 
 export default ApiService;
