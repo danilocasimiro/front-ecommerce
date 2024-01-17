@@ -75,15 +75,15 @@ export default function LoginForm() {
                         </g>
                       </svg>
                     </span>
-                    <span className="app-brand-text demo text-body fw-bolder">Sneat</span>
+                    <span className="app-brand-text demo text-body fw-bolder">Sistema</span>
                   </a>
                 </div>
-                <h4 className="mb-2">Welcome to Sneat! 👋</h4>
-                <p className="mb-4">Please sign-in to your account and start the adventure</p>
+                <h4 className="mb-2">Seja bem-vindo! 👋</h4>
+                <p className="mb-4">Logue em nosso sistema</p>
 
                 <form className='mb-3' onSubmit={(event) => handleSubmit(event)}>
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email or Username</label>
+                    <label htmlFor="email" className="form-label">Email</label>
                     <input
                       type="text"
                       className="form-control"
@@ -96,9 +96,9 @@ export default function LoginForm() {
                   </div>
                   <div className="mb-3 form-password-toggle">
                     <div className="d-flex justify-content-between">
-                      <label className="form-label" htmlFor="password">Password</label>
+                      <label className="form-label" htmlFor="password">Senha</label>
                       <a href="auth-forgot-password-basic.html">
-                        <small>Forgot Password?</small>
+                        <small>Esqueceu sua senha?</small>
                       </a>
                     </div>
                     <div className="input-group input-group-merge">
@@ -117,18 +117,18 @@ export default function LoginForm() {
                   <div className="mb-3">
                     <div className="form-check">
                       <input className="form-check-input" type="checkbox" id="remember-me" />
-                      <label className="form-check-label" htmlFor="remember-me"> Remember Me </label>
+                      <label className="form-check-label" htmlFor="remember-me">Relembre-me </label>
                     </div>
                   </div>
                   <div className="mb-3">
-                    <button className="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                    <button className="btn btn-primary d-grid w-100" type="submit">Logar</button>
                   </div>
                 </form>
 
                 <p className="text-center">
-                  <span>New on our platform?</span>
-                  <a href="auth-register-basic.html">
-                    <span>Create an account</span>
+                  <span>Novo em nossa plataforma?</span>
+                  <a href="/registration">
+                    <span>Criar uma conta</span>
                   </a>
                 </p>
               </div>
