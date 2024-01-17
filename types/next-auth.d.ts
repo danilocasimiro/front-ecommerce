@@ -13,6 +13,7 @@ declare module 'next-auth' {
     name: string;
     email_address: string;
     type: string;
+    expiration_date: string;
     company_id: string | null;
     company_name: string | null;
     jwt_token: string;

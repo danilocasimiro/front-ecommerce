@@ -40,6 +40,7 @@ export default function CompanyGrid({ companies }: { companies: Company[] }) {
           email_address: decodedToken.user.email_address,
           name: decodedToken.user.name,
           type: decodedToken.user.type,
+          expiration_date: decodedToken.user.expiration_date,
           company_id: decodedToken.user.company_id,
           company_name: decodedToken.user.company_name,
           id: decodedToken.user.id,

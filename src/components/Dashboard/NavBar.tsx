@@ -22,6 +22,7 @@ export default function NavBar() {
       email_address: session!.user.email_address,
       name: session!.user.name,
       type: session!.user.type,
+      expiration_date: session!.user.expiration_date,
       company_id: '',
       company_name: '',
       id: session!.user.id,
@@ -57,6 +58,9 @@ export default function NavBar() {
               <p className="mt-3" style={{ marginRight: '2rem' }}>{user.company_name}</p>
               <button type="button" className="btn btn-danger ml-3" onClick={handleCompanyLogout}>Deslogar</button>
             </>
+          )}
+          { user.expiration_date && (
+            <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: {user.expiration_date}</p>
           )}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
@@ -105,7 +109,7 @@ export default function NavBar() {
                   </a>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/subscriptions">
+                  <a className="dropdown-item" href="/subscriptions/list">
                     <i className="bx bx-cog me-2"></i>
                     <span className="align-middle">Minhas assinaturas</span>
                   </a>
