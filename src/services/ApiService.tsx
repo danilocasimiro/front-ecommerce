@@ -19,12 +19,19 @@ interface ProfileForm {
     email_address: string;
   }
 }
+interface TenantForm {
+  name: string;
+  user: {
+    email_address: string;
+    password: string;
+  }
+}
 
 class ApiService {
   private api: AxiosInstance;
   private headers;
 
-  constructor(token: string) {
+  constructor(token: string | null) {
     this.api = axios.create({
       baseURL: 'http://localhost:3001/', // Substitua pela URL real da sua API
     });
@@ -180,6 +187,16 @@ class ApiService {
     } catch (error) {
       console.error('Erro ao deletar dados:', error);
       throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async storeTenant(dataForm: TenantForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/tenants', dataForm, this.headers);
+        return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      throw error;
     }
   }
 
