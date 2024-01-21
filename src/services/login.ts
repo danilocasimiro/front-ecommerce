@@ -24,6 +24,7 @@ export default async function Login({ email_address, password }: LoginForm) {
       type: decodedToken.user.type,
       company_name: '',
       company_id: '',
+      subscription_status: decodedToken.user.subscription_status,
       expiration_date: decodedToken.user.expiration_date,
       id: decodedToken.user.id,
       friendly_id: decodedToken.user.friendly_id,
