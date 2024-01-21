@@ -1,6 +1,6 @@
 export const loadScripts = () => {
   const scriptUrls = [
-    '../vendor/js/helpers.js',
+    '/vendor/js/helpers.js',
     '/../js/config.js',
     '/vendor/libs/jquery/jquery.js',
     '/vendor/libs/popper/popper.js',
