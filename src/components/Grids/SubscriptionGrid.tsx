@@ -1,5 +1,8 @@
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
+import Link from "next/link";
+import Money from "../Formatters/Money";
+import Date from "../Formatters/Date";
 
 interface Subscription {
   id: number;
@@ -9,6 +12,10 @@ interface Subscription {
   subscription_plan: {
     name: string;
     price: number;
+  }
+  tenant: {
+    id: string,
+    name: string
   }
 }
 
@@ -33,14 +40,15 @@ export default function SubscriptionGrid({ subscriptions }: { subscriptions: Sub
 
   return (
     <>
-      <h4 className="fw-bold py-3 mb-4"><span className="text-muted fw-light">Tables /</span> Basic Tables</h4>
+      <h4 className="fw-bold py-3 mb-4"><span className="text-muted fw-light">Assinaturas /</span> Listar</h4>
 
       <div className="card">
-        <h5 className="card-header">Minhas Assinaturas</h5>
+        <h5 className="card-header">Assinaturas</h5>
         <div className="table-responsive text-nowrap">
           <table className="table table-striped">
             <thead>
               <tr>
+                <th>Cliente</th>
                 <th>Nome do plano</th>
                 <th>Status</th>
                 <th>Iniciou em</th>
@@ -52,11 +60,16 @@ export default function SubscriptionGrid({ subscriptions }: { subscriptions: Sub
             <tbody className="table-border-bottom-0">
               {subscriptions?.map(subscription => (
                 <tr key={subscription.id}>
+                  <td style={{ color: '#697a8d' }}>
+                    <Link href={`/tenants/${subscription.tenant.id}`}>
+                      {subscription.tenant.name}
+                    </Link>
+                  </td>
                   <td style={{ color: '#697a8d' }}>{subscription.subscription_plan.name}</td>
                   <td style={{ color: '#697a8d' }}>{subscription.status}</td>
-                  <td style={{ color: '#697a8d' }}>{subscription.start_at}</td>
-                  <td style={{ color: '#697a8d' }}>{subscription.end_at}</td>
-                  <td style={{ color: '#697a8d' }}>{subscription.subscription_plan.price}</td>
+                  <td style={{ color: '#697a8d' }}><Date date={subscription.start_at} /></td>
+                  <td style={{ color: '#697a8d' }}><Date date={subscription.end_at} /></td>
+                  <td style={{ color: '#697a8d' }}><Money value={subscription.subscription_plan.price} /></td>
                   <td>
                     <div className="dropdown">
                       <button type="button" className="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
