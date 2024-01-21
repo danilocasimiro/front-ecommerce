@@ -10,6 +10,7 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import AuthCheck from "@/components/authCheck";
 import TenantForm from "@/components/Forms/TenantForm";
+import Loading from "@/components/Dashboard/Loading";
 
 export default function TenantNew() {
   return (
@@ -24,7 +25,9 @@ export default function TenantNew() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    <TenantForm tenant={null} />
+                    <Loading>
+                      <TenantForm tenant={null} />
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

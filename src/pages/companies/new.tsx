@@ -10,6 +10,7 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import CompanyForm from "@/components/Forms/CompanyForm";
 import AuthCheck from "@/components/authCheck";
+import Loading from "@/components/Dashboard/Loading";
 
 export default function CompanyNew() {
   return (
@@ -24,7 +25,9 @@ export default function CompanyNew() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    <CompanyForm company={null} />
+                    <Loading>
+                      <CompanyForm company={null} />
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

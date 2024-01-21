@@ -12,16 +12,15 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ProductGrid from "@/components/Grids/ProductGrid";
 import ApiService from '../../services/ApiService';
-
+import Loading from "@/components/Dashboard/Loading";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchProducts({ expand: 'product_type' });
@@ -29,14 +28,12 @@ export default function ProductList() {
           setProducts(result.data);
         } catch (error) {
           console.error('Erro ao obter dados do produto:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -50,11 +47,9 @@ export default function ProductList() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <ProductGrid products={products} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

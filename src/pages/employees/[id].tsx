@@ -13,40 +13,40 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
 import EmployeeForm from "@/components/Forms/EmployeeForm";
+import Loading from "@/components/Dashboard/Loading";
 
 interface Employee {
   id: number,
   name: string,
   employable_type: string,
-  company: {
+  employable_id: string,
+  employable: {
     name: string
   }
 }
 
 export default function EmployeeEdit() {
   const [employee, setEmployee] = useState<Employee | null | undefined>();
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchEmployee(id);
+
           setEmployee(result.data);
         } catch (error) {
           console.error('Erro ao obter dados do colaborador:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -60,11 +60,9 @@ export default function EmployeeEdit() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <EmployeeForm employee={employee} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

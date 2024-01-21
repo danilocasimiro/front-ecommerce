@@ -13,6 +13,7 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
 import TenantForm from "@/components/Forms/TenantForm";
+import Loading from "@/components/Dashboard/Loading";
 
 interface Tenant {
   id: number,
@@ -25,28 +26,26 @@ interface Tenant {
 
 export default function TenantEdit() {
   const [tenant, setTenant] = useState<Tenant | null | undefined>();
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchTenant(id, { expand: 'user'});
+
           setTenant(result.data);
         } catch (error) {
           console.error('Erro ao obter dados do cliente:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -60,11 +59,9 @@ export default function TenantEdit() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <TenantForm tenant={tenant} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

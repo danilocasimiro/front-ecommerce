@@ -13,7 +13,7 @@ export default function LoginForm() {
 
   return (
     <>
-      <div className="container-xxl">
+      <div className="container-sm">
         <div className="authentication-wrapper authentication-basic container-p-y">
           <div className="authentication-inner">
             <div className="card">

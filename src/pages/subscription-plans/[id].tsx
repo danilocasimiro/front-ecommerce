@@ -13,6 +13,7 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
 import SubscriptionPlanForm from "@/components/Forms/SubscriptionPlanForm";
+import Loading from "@/components/Dashboard/Loading";
 
 interface SubscriptionPlan {
   id: number,
@@ -24,28 +25,25 @@ interface SubscriptionPlan {
 
 export default function SubscriptionPlanEdit() {
   const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan | null | undefined>();
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchSubscriptionPlan(id, { expand: 'user'});
           setSubscriptionPlan(result.data);
         } catch (error) {
           console.error('Erro ao obter dados do plano:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -59,11 +57,9 @@ export default function SubscriptionPlanEdit() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <SubscriptionPlanForm subscriptionPlan={subscriptionPlan} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

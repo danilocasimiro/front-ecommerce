@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSession } from 'next-auth/react';
 import Footer from '@/components/Dashboard/Footer';
 import LeftMenu from '@/components/Dashboard/LeftMenu/LeftMenu';
 import NavBar from '@/components/Dashboard/NavBar';
@@ -13,6 +12,8 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
 import CompanyForm from "@/components/Forms/CompanyForm";
+import Loading from "@/components/Dashboard/Loading";
+import { useSession } from 'next-auth/react';
 
 interface Company {
   id: string;
@@ -29,28 +30,25 @@ interface Company {
 
 export default function CompanyEdit() {
   const [company, setCompany] = useState<Company | null | undefined>();
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { data: session } = useSession();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchCompany(id, { expand: 'address' });
           setCompany(result.data);
         } catch (error) {
           console.error('Erro ao obter dados da empresa:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -64,18 +62,15 @@ export default function CompanyEdit() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <CompanyForm company={company} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>
                 </div>
               </div>
             </div>
-
             <div className="layout-overlay layout-menu-toggle"></div>
           </div>
         </div>

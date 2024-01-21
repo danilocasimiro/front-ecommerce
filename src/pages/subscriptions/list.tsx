@@ -12,31 +12,29 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import SubscriptionGrid from "@/components/Grids/SubscriptionGrid";
+import Loading from "@/components/Dashboard/Loading";
 
 
 export default function SubscriptionList() {
   const [subscriptions, setSubscriptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchSubscriptions({ expand: 'subscription_plan,tenant' });
 
           setSubscriptions(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados da empresa:', error);
-        } finally {
-          setLoading(false);
+          console.error('Erro ao obter dados da assinatura:', error);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -50,11 +48,9 @@ export default function SubscriptionList() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <SubscriptionGrid subscriptions={subscriptions} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

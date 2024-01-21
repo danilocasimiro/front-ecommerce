@@ -12,16 +12,15 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import CompanyGrid from "@/components/Grids/CompanyGrid";
 import ApiService from '../../services/ApiService';
-
+import Loading from "@/components/Dashboard/Loading";
 
 export default function CompanyList() {
   const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchCompanies();
@@ -29,14 +28,12 @@ export default function CompanyList() {
           setCompanies(result.data);
         } catch (error) {
           console.error('Erro ao obter dados da empresa:', error);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -50,11 +47,9 @@ export default function CompanyList() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <CompanyGrid companies={companies} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

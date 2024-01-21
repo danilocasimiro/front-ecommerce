@@ -13,6 +13,7 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
 import ProductForm from "@/components/Forms/ProductForm";
+import Loading from "@/components/Dashboard/Loading";
 
 interface Product {
   id: number;
@@ -23,28 +24,26 @@ interface Product {
 
 export default function ProductEdit() {
   const [product, setProduct] = useState<Product | null | undefined>();
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "authenticated" && session?.token) {
+      if (session) {
         try {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchProduct(id);
+
           setProduct(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados da empresa:', error);
-        } finally {
-          setLoading(false);
+          console.error('Erro ao obter dados do produto:', error);
         }
       }
     };
 
     fetchData();
-  }, [status, session?.token]);
+  }, [session]);
 
   return (
     <>
@@ -58,11 +57,9 @@ export default function ProductEdit() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    {loading ? (
-                      <p>Carregando...</p>
-                    ) : (
+                    <Loading>
                       <ProductForm product={product} />
-                    )}
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>

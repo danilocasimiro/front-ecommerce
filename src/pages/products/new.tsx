@@ -10,6 +10,7 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import AuthCheck from "@/components/authCheck";
 import ProductForm from "@/components/Forms/ProductForm";
+import Loading from "@/components/Dashboard/Loading";
 
 export default function ProductNew() {
   return (
@@ -24,7 +25,9 @@ export default function ProductNew() {
 
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
-                    <ProductForm product={null} />
+                    <Loading>
+                      <ProductForm product={null} />
+                    </Loading>
                   </div>
                   <Footer />
                   <div className="content-backdrop fade"></div>
