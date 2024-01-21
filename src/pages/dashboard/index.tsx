@@ -9,29 +9,32 @@ import "@/assets/vendor/css/theme-default.css"
 import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
+import VerifyTenantSubscriptionExpiration from "@/components/VerifyTenantSubscriptionExpiration";
 
 export default function Dashboard() {
   return (
     <>
       <AuthCheck>
-        <div>
-          <div className="layout-wrapper layout-content-navbar">
-            <div className="layout-container">
-              <LeftMenu />
-              <div className="layout-page">
-                <NavBar />
+        <VerifyTenantSubscriptionExpiration>
+          <div>
+            <div className="layout-wrapper layout-content-navbar">
+              <div className="layout-container">
+                <LeftMenu />
+                <div className="layout-page">
+                  <NavBar />
 
-                <div className="content-wrapper">
-                  <div className="container-xxl flex-grow-1 container-p-y"></div>
-                  <Footer />
-                  <div className="content-backdrop fade"></div>
+                  <div className="content-wrapper">
+                    <div className="container-xxl flex-grow-1 container-p-y"></div>
+                    <Footer />
+                    <div className="content-backdrop fade"></div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="layout-overlay layout-menu-toggle"></div>
+              <div className="layout-overlay layout-menu-toggle"></div>
+            </div>
           </div>
-        </div>
+        </VerifyTenantSubscriptionExpiration>
       </AuthCheck>
     </>
   );

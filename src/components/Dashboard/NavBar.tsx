@@ -2,10 +2,12 @@ import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useSession, signIn } from 'next-auth/react';
+import Date from '../Formatters/Date';
 
 export default function NavBar() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const currentPath = router.pathname;
 
   const handleLogout = async () => {
     if (session) {
@@ -25,6 +27,7 @@ export default function NavBar() {
       expiration_date: session!.user.expiration_date,
       company_id: '',
       company_name: '',
+      subscription_status: session!.user.subscription_status,
       id: session!.user.id,
       friendly_id: session!.user.friendly_id,
     } )
@@ -53,14 +56,14 @@ export default function NavBar() {
         </div>
 
         <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-          { user.company_name != 'undefined' && user.company_name && (
+          { user.company_name != 'undefined' && user.company_name && currentPath != '/subscription-plans/list' && (
             <>
               <p className="mt-3" style={{ marginRight: '2rem' }}>{user.company_name}</p>
               <button type="button" className="btn btn-danger ml-3" onClick={handleCompanyLogout}>Deslogar</button>
             </>
           )}
-          { user.expiration_date && (
-            <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: {user.expiration_date}</p>
+          { user.type != 'Admin' && user.expiration_date && currentPath != '/subscription-plans/list' && (
+            <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: <Date date={user.expiration_date}/></p>
           )}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
@@ -108,12 +111,14 @@ export default function NavBar() {
                     <span className="align-middle">Meu perfil</span>
                   </a>
                 </li>
+                { user.type == 'Tenant' && (
                 <li>
                   <a className="dropdown-item" href="/subscriptions/list">
                     <i className="bx bx-cog me-2"></i>
                     <span className="align-middle">Minhas assinaturas</span>
                   </a>
                 </li>
+                ) }
                 <li>
                   <a className="dropdown-item" href="#">
                     <i className="bx bx-cog me-2"></i>

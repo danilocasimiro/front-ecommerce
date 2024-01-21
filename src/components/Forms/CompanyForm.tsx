@@ -1,6 +1,7 @@
 import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 interface Company {
   id: string,
@@ -17,6 +18,7 @@ interface Company {
 
 export default function CompanyForm({ company }: { company: Company | null | undefined }) {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -65,7 +67,7 @@ export default function CompanyForm({ company }: { company: Company | null | und
       } else {
         await apiService.storeCompany(formData);
       }
-
+      router.push('/companies/list');
     } catch (error) {
       console.error('Erro ao enviar dados para a API:', error);
     }

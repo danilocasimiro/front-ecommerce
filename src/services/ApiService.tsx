@@ -5,6 +5,9 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 interface CompanyDataForm {
   name: string;
 }
+interface TenantDataForm {
+  name: string;
+}
 interface ProductTypeForm {
   name: string;
 }
@@ -13,18 +16,25 @@ interface ProductForm {
   product_type_id: string;
   price: number;
 }
-interface ProfileForm {
-  name: string;
-  user: {
-    email_address: string;
-  }
-}
 interface TenantForm {
   name: string;
   user: {
     email_address: string;
     password: string;
   }
+}
+interface SubscriptionForm {
+  status: string;
+  subscription_plan_id: number;
+}
+interface EmployeeDataForm {
+  name: string;
+}
+interface SubscriptionPlanForm {
+  name: string;
+  description: string;
+  activation_months: number;
+  price: number;
 }
 
 class ApiService {
@@ -40,6 +50,116 @@ class ApiService {
         'Authorization': `Bearer ${token}`, // Adicione o token aos cabeçalhos
         'Content-Type': 'application/json', // Adapte conforme necessário
       },
+    }
+  }
+
+  async fetchUser(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/users/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async fetchTenants(): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/tenants', this.headers);
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async storeTenant(dataForm: TenantForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/tenants', dataForm, this.headers);
+        return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      throw error;
+    }
+  }
+
+  async fetchTenant(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/tenants/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async updateTenant(id: number, dataForm: TenantDataForm): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.put('/tenants/' + id, dataForm, this.headers);
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async deleteTenant(id: number): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.delete('/tenants/' + id, this.headers);
+    } catch (error) {
+      console.error('Erro ao deletar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async fetchEmployees(params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/employees', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async storeEmployee(dataForm: EmployeeDataForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/employees', dataForm, this.headers);
+        return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      throw error;
+    }
+  }
+
+  async fetchEmployee(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/employees/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async updateEmployee(id: number, dataForm: EmployeeDataForm): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.put('/employees/' + id, dataForm, this.headers);
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async deleteEmployee(id: number): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.delete('/employees/' + id, this.headers);
+    } catch (error) {
+      console.error('Erro ao deletar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+  
+  async signInCompany(companyId: number): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.post('/authenticate/company_auth/' + companyId, {}, this.headers);
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
     }
   }
 
@@ -85,15 +205,6 @@ class ApiService {
       return await this.api.delete('/companies/' + id, this.headers);
     } catch (error) {
       console.error('Erro ao deletar dados:', error);
-      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
-    }
-  }
-  
-  async signInCompany(companyId: number): Promise<AxiosResponse<any>> {
-    try {
-      return await this.api.post('/authenticate/company_auth/' + companyId, {}, this.headers);
-    } catch (error) {
-      console.error('Erro ao atualizar dados:', error);
       throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
     }
   }
@@ -190,9 +301,18 @@ class ApiService {
     }
   }
 
-  async storeTenant(dataForm: TenantForm): Promise<AxiosResponse<any>> {
+  async fetchSubscriptions(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.post('/tenants', dataForm, this.headers);
+      return await this.api.get('/subscriptions/', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async storeSubscription(dataForm: SubscriptionForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/subscriptions', dataForm, this.headers);
         return response.data;
     } catch (error) {
       console.error('Erro ao salvar dados:', error);
@@ -200,29 +320,48 @@ class ApiService {
     }
   }
 
-  async updateProfile(id: number, dataForm: ProfileForm): Promise<AxiosResponse<any>> {
+  async fetchSubscriptionPlan(id: string | string[] | undefined, params: {}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.put('/tenants/' + id, dataForm, this.headers);
+      return await this.api.get('/subscription_plans/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async fetchSubscriptionPlans(params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/subscription_plans/', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async storeSubscriptionPlan(dataForm: SubscriptionPlanForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/subscription_plans', dataForm, this.headers);
+        return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      throw error;
+    }
+  }
+
+  async deleteSubscriptionPlan(id: number): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.delete('/subscription_plans/' + id, this.headers);
+    } catch (error) {
+      console.error('Erro ao deletar dados:', error);
+      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
+    }
+  }
+
+  async updateSubscriptionPlan(id: number, dataForm: SubscriptionPlanForm): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.put('/subscription_plans/' + id, dataForm, this.headers);
     } catch (error) {
       console.error('Erro ao atualizar dados:', error);
-      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
-    }
-  }
-
-  async fetchTenant(id: string | string[] | undefined, params: {}): Promise<AxiosResponse<any>> {
-    try {
-      return await this.api.get('/tenants/' + id, {headers: this.headers.headers, params: params });
-    } catch (error) {
-      console.error('Erro ao buscar dados:', error);
-      throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
-    }
-  }
-
-  async fetchSubscriptions(params?: {}): Promise<AxiosResponse<any>> {
-    try {
-      return await this.api.get('/subscriptions/', {headers: this.headers.headers, params: params });
-    } catch (error) {
-      console.error('Erro ao buscar dados:', error);
       throw error; // Rejeitar a promessa para que o chamador possa lidar com o erro
     }
   }

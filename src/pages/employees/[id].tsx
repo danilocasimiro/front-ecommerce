@@ -12,20 +12,19 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
-import UserForm from "@/components/Forms/UserForm";
+import EmployeeForm from "@/components/Forms/EmployeeForm";
 
-interface User {
-  id: number;
-  email_address: string,
-  password: string,
-  profile_id: string,
-  profile: {
+interface Employee {
+  id: number,
+  name: string,
+  employable_type: string,
+  company: {
     name: string
   }
 }
 
-export default function UserEdit() {
-  const [user, setUser] = useState<User | null | undefined>();
+export default function EmployeeEdit() {
+  const [employee, setEmployee] = useState<Employee | null | undefined>();
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -36,11 +35,10 @@ export default function UserEdit() {
       if (status === "authenticated" && session?.token) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchUser(id, { expand: 'profile'});
-
-          setUser(result.data);
+          const result = await apiService.fetchEmployee(id);
+          setEmployee(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados do usuario:', error);
+          console.error('Erro ao obter dados do colaborador:', error);
         } finally {
           setLoading(false);
         }
@@ -65,7 +63,7 @@ export default function UserEdit() {
                     {loading ? (
                       <p>Carregando...</p>
                     ) : (
-                      <UserForm user={user} />
+                      <EmployeeForm employee={employee} />
                     )}
                   </div>
                   <Footer />

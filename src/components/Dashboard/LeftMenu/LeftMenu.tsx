@@ -4,11 +4,22 @@ import { useRouter } from 'next/router';
 import CompanyLeftMenu from './CompanyLeftMenu';
 import { useSession } from 'next-auth/react';
 import UserLeftMenu from './UserLeftMenu';
+import AdminLeftMenu from './AdminLeftMenu';
 
 export default function LeftMenu() {
   const router = useRouter();
   const currentPath = router.pathname;
   const { data: session } = useSession();
+
+  let leftMenuComponent;
+
+  if (session?.user?.company_name) {
+    leftMenuComponent = <CompanyLeftMenu />;
+  } else if (session?.user?.type == 'Admin') {
+    leftMenuComponent = <AdminLeftMenu />;
+  } else {
+    leftMenuComponent = <UserLeftMenu />;
+  }
 
   return (
     <>
@@ -42,11 +53,7 @@ export default function LeftMenu() {
               <div data-i18n="Analytics">Dashboard</div>
             </a>
           </li>
-          {session?.user?.company_name ? (
-            <CompanyLeftMenu />
-          ) : (
-            <UserLeftMenu />
-          )}
+          {leftMenuComponent}
         </ul>
       </aside>
     </>

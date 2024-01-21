@@ -12,20 +12,18 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
-import UserForm from "@/components/Forms/UserForm";
+import SubscriptionPlanForm from "@/components/Forms/SubscriptionPlanForm";
 
-interface User {
-  id: number;
-  email_address: string,
-  password: string,
-  profile_id: string,
-  profile: {
-    name: string
-  }
+interface SubscriptionPlan {
+  id: number,
+  name: string,
+  description: string,
+  activation_months: number,
+  price: number
 }
 
-export default function UserEdit() {
-  const [user, setUser] = useState<User | null | undefined>();
+export default function SubscriptionPlanEdit() {
+  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan | null | undefined>();
   const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -36,11 +34,10 @@ export default function UserEdit() {
       if (status === "authenticated" && session?.token) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchUser(id, { expand: 'profile'});
-
-          setUser(result.data);
+          const result = await apiService.fetchSubscriptionPlan(id, { expand: 'user'});
+          setSubscriptionPlan(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados do usuario:', error);
+          console.error('Erro ao obter dados do plano:', error);
         } finally {
           setLoading(false);
         }
@@ -65,7 +62,7 @@ export default function UserEdit() {
                     {loading ? (
                       <p>Carregando...</p>
                     ) : (
-                      <UserForm user={user} />
+                      <SubscriptionPlanForm subscriptionPlan={subscriptionPlan} />
                     )}
                   </div>
                   <Footer />

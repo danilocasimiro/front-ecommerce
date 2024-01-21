@@ -10,6 +10,7 @@ interface ApiUser {
   expiration_date: string,
   company_id: string | null,
   company_name: string | null,
+  subscription_status: string | null,
   friendly_id: string
 }
 
@@ -43,6 +44,9 @@ export default NextAuth({
         expiration_date: {
           type: "text"
         },
+        subscription_status: {
+          type: "text"
+        },
         company_id: {
           type: "text"
         },
@@ -62,6 +66,7 @@ export default NextAuth({
           type: credentials.type,
           jwt_token: credentials.jwt_token,
           company_id: credentials.company_id,
+          subscription_status: credentials.subscription_status,
           expiration_date: credentials.expiration_date,
           company_name: credentials.company_name,
           friendly_id: credentials.friendly_id,
@@ -80,6 +85,7 @@ export default NextAuth({
         token.id = user.id
         token.friendly_id = user.friendly_id
         token.expiration_date = user.expiration_date
+        token.subscription_status = user.subscription_status
         token.company_id = user.company_id
         token.company_name = user.company_name
       }
@@ -92,6 +98,7 @@ export default NextAuth({
       session.user.id = token.id
       session.user.friendly_id = token.friendly_id
       session.user.expiration_date = token.expiration_date
+      session.user.subscription_status = token.subscription_status
       session.user.company_id = token.company_id
       session.user.company_name = token.company_name
       return session

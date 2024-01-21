@@ -24,7 +24,7 @@ export default function SubscriptionList() {
       if (status === "authenticated" && session?.token) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchSubscriptions({ expand: 'subscription_plan' });
+          const result = await apiService.fetchSubscriptions({ expand: 'subscription_plan,tenant' });
 
           setSubscriptions(result.data);
         } catch (error) {
