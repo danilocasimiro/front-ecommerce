@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Money from '../../Formatters/Money';
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface subscriptionPlans {
   id: number | undefined;
@@ -66,7 +67,7 @@ export default function SubscriptionPlanGrid({ subscriptionPlans }: { subscripti
 
       window.location.reload();
     } catch (error: any) {
-      console.error(`Erro ao excluir assinatura: ${error.message}`);
+      toast.error(error.response.data.error);
     }
   };
 

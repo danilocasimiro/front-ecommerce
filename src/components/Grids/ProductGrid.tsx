@@ -1,5 +1,6 @@
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface ProductType {
   id: number,
@@ -26,7 +27,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
 
         window.location.reload();
       } catch (error: any) {
-        console.error(`Erro ao excluir produto: ${error.message}`);
+        toast.error(error.response.data.error);
       }
     }
   };

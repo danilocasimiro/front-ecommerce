@@ -2,6 +2,7 @@ import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface Employee {
   id: number,
@@ -28,8 +29,8 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
     try {
       const response = await api.fetchCompanies();
       setOptions(response.data);
-    } catch (error) {
-      console.error('Erro ao carregar opções:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 
@@ -69,8 +70,8 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
         await apiService.storeEmployee(formData);
       }
       router.push('/employees/lists');
-    } catch (error) {
-      console.error('Erro ao enviar dados para a API:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 

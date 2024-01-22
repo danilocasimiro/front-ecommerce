@@ -1,5 +1,6 @@
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface Tenant {
   id: number;
@@ -19,7 +20,7 @@ export default function TenantGrid({ tenants }: { tenants: Tenant[] }) {
 
         window.location.reload();
       } catch (error: any) {
-        console.error(`Erro ao excluir cliente: ${error.message}`);
+        toast.error(error.response.data.error);
       }
     }
   };

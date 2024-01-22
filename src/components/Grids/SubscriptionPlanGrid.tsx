@@ -1,6 +1,7 @@
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
 import Money from "../Formatters/Money";
+import toast from 'react-hot-toast';
 
 interface SubscriptionPlan {
   id: number;
@@ -23,7 +24,7 @@ export default function SubscriptionPlanGrid({ subscriptionPlans }: { subscripti
 
         window.location.reload();
       } catch (error: any) {
-        console.error(`Erro ao excluir plano: ${error.message}`);
+        toast.error(error.response.data.error);
       }
     }
   };

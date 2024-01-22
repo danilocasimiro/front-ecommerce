@@ -2,6 +2,7 @@ import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 
 interface Company {
   id: string,
@@ -68,8 +69,8 @@ export default function CompanyForm({ company }: { company: Company | null | und
         await apiService.storeCompany(formData);
       }
       router.push('/companies/list');
-    } catch (error) {
-      console.error('Erro ao enviar dados para a API:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 

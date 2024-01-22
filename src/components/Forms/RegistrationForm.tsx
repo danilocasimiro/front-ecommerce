@@ -1,6 +1,7 @@
 import ApiService from "@/services/ApiService";
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -20,8 +21,8 @@ export default function RegistrationForm() {
       await apiService.storeTenant(formData);
 
       router.push('/login');
-    } catch (error) {
-      console.error('Erro ao enviar dados para a API:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 

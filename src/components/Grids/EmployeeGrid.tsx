@@ -1,5 +1,6 @@
 import ApiService from "@/services/ApiService";
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface Employee {
   id: number;
@@ -24,7 +25,7 @@ export default function EmployeeGrid({ employees }: { employees: Employee[] }) {
 
         window.location.reload();
       } catch (error: any) {
-        console.error(`Erro ao excluir colaborador: ${error.message}`);
+        toast.error(error.response.data.error);
       }
     }
   };

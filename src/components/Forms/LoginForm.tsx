@@ -1,5 +1,7 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 import Login from '../../services/login'
+import { signIn } from "next-auth/react";
+import toast from 'react-hot-toast';
 
 export default function LoginForm() {
   const [email_address, setEmail] = useState('')
@@ -9,6 +11,27 @@ export default function LoginForm() {
     event.preventDefault();
 
     Login({ email_address, password })
+      .then((response) => {
+        const decodedToken = JSON.parse(atob(response.data.split('.')[1]));
+
+        signIn("credentials", { 
+          callbackUrl: '/dashboard', 
+          jwt_token: response.data, 
+          email_address: decodedToken.user.email_address,
+          name: decodedToken.user.name,
+          type: decodedToken.user.type,
+          company_name: '',
+          company_id: '',
+          subscription_status: decodedToken.user.subscription_status,
+          expiration_date: decodedToken.user.expiration_date,
+          id: decodedToken.user.id,
+          friendly_id: decodedToken.user.friendly_id,
+        })
+        toast.success('Login realizado com sucesso');
+        return response
+      }).catch(exception => {
+        toast.error(exception.response.data.error);
+      });
   }
 
   return (

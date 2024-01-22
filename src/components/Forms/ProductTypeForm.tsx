@@ -2,6 +2,7 @@ import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface ProductType {
   id: number,
@@ -45,8 +46,8 @@ export default function ProductTypeForm({ productType }: { productType: ProductT
       }
 
       router.push('/product-types/list');
-    } catch (error) {
-      console.error('Erro ao enviar dados para a API:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 

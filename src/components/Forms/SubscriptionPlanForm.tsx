@@ -2,7 +2,7 @@ import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import Money from '../Formatters/Money';
+import toast from 'react-hot-toast';
 
 interface SubscriptionPlan {
   id: number,
@@ -80,8 +80,8 @@ export default function SubscriptionPlanForm({ subscriptionPlan }: { subscriptio
         await apiService.storeSubscriptionPlan(formData);
       }
       router.push('/subscription-plans/lists');
-    } catch (error) {
-      console.error('Erro ao enviar dados para a API:', error);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 

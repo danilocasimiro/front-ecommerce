@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react';
 import Link from "next/link";
 import Money from "../Formatters/Money";
 import Date from "../Formatters/Date";
+import toast from 'react-hot-toast';
 
 interface Subscription {
   id: number;
@@ -33,7 +34,7 @@ export default function SubscriptionGrid({ subscriptions }: { subscriptions: Sub
 
         window.location.reload();
       } catch (error: any) {
-        console.error(`Erro ao excluir assinatura: ${error.message}`);
+        toast.error(error.response.data.error);
       }
     }
   };
