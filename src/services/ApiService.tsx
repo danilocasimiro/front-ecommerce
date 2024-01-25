@@ -54,9 +54,7 @@ class ApiService {
 
   async fetchUser(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/users/' + id, {headers: this.headers.headers, params: params });
-      toast.success('Cliente encontrado com sucesso');
-      return response;
+      return await this.api.get('/users/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -64,9 +62,7 @@ class ApiService {
 
   async fetchTenants(): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/tenants', this.headers);
-      toast.success('Clientes encontrados com sucesso');
-      return response;
+      return await this.api.get('/tenants', this.headers);
     } catch (error) {
       throw error;
     }
@@ -75,7 +71,7 @@ class ApiService {
   async storeTenant(dataForm: TenantForm): Promise<AxiosResponse<any>> {
     try {
       const response = await this.api.post('/tenants', dataForm, this.headers);
-      toast.success('Cliente salvo com sucesso');
+      toast.success('Cliente criado com sucesso');
       return response.data;
     } catch (error) {
       throw error;
@@ -84,9 +80,7 @@ class ApiService {
 
   async fetchTenant(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/tenants/' + id, {headers: this.headers.headers, params: params });
-      toast.success('Cliente encontrado com sucesso');
-      return response;
+      return await this.api.get('/tenants/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -114,9 +108,7 @@ class ApiService {
 
   async fetchEmployees(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/employees', {headers: this.headers.headers, params: params });
-      toast.success('Colaboradores encontrados com sucesso');
-      return response;
+      return await this.api.get('/employees', {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -125,7 +117,7 @@ class ApiService {
   async storeEmployee(dataForm: EmployeeDataForm): Promise<AxiosResponse<any>> {
     try {
       const response = await this.api.post('/employees', dataForm, this.headers);
-      toast.success('Colaborador salvo com sucesso');
+      toast.success('Colaborador criado com sucesso');
       return response.data;
     } catch (error) {
       throw error;
@@ -134,34 +126,31 @@ class ApiService {
 
   async fetchEmployee(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/employees/' + id, {headers: this.headers.headers, params: params });
-      toast.success('Colaborador encontrado com sucesso');
-      return response;
+      return await this.api.get('/employees/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
   }
 
-  async updateEmployee(id: number, dataForm: EmployeeDataForm): Promise<AxiosResponse<any>> {
+  async updateEmployee(id: number, dataForm: EmployeeDataForm): Promise<void> {
     try {
-      const response = await this.api.put('/employees/' + id, dataForm, this.headers);
+      await this.api.put('/employees/' + id, dataForm, this.headers);
       toast.success('Colaborador atualizado com sucesso');
-      return response;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.log('error: ', error)
+      toast.error(error.response.data.error);
     }
   }
 
-  async deleteEmployee(id: number): Promise<AxiosResponse<any>> {
+  async deleteEmployee(id: number): Promise<void> {
     try {
-      const response = await this.api.delete('/employees/' + id, this.headers);
+      await this.api.delete('/employees/' + id, this.headers);
       toast.success('Colaborador removido com sucesso');
-      return response;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   }
-  
+
   async signInCompany(companyId: number): Promise<AxiosResponse<any>> {
     try {
       const response = await this.api.post('/authenticate/company_auth/' + companyId, {}, this.headers);
@@ -184,9 +173,7 @@ class ApiService {
 
   async fetchCompanies(): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/companies', this.headers);
-      toast.success('Empresas encontradas com sucesso');
-      return response;
+      return await this.api.get('/companies', this.headers);
     } catch (error) {
       throw error;
     }
@@ -194,9 +181,7 @@ class ApiService {
 
   async fetchCompany(id: string | string[] | undefined, params: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/companies/' + id, {headers: this.headers.headers, params: params });
-      toast.success('Empresa encontrada com sucesso');
-      return response;
+      return await this.api.get('/companies/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -234,9 +219,7 @@ class ApiService {
 
   async fetchProductTypes(): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/product_types', this.headers);
-      toast.success('Tipos de produtos encontrados com sucesso');
-      return response;
+      return await this.api.get('/product_types', this.headers);
     } catch (error) {
       throw error;
     }
@@ -244,9 +227,7 @@ class ApiService {
 
   async fetchProductType(id: string | string[] | undefined): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/product_types/' + id, this.headers);
-      toast.success('Tipo de produto encontrado com sucesso');
-      return response;
+      return await this.api.get('/product_types/' + id, this.headers);
     } catch (error) {
       throw error;
     }
@@ -284,9 +265,7 @@ class ApiService {
 
   async fetchProducts(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/products', {headers: this.headers.headers, params: params });
-      toast.success('Produtos encontrados com sucesso');
-      return response;
+      return await this.api.get('/products', {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -294,9 +273,7 @@ class ApiService {
 
   async fetchProduct(id: string | string[] | undefined): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/products/' + id, this.headers);
-      toast.success('Produto encontrado com sucesso');
-      return response;
+      return await this.api.get('/products/' + id, this.headers);
     } catch (error) {
       throw error;
     }
@@ -324,9 +301,7 @@ class ApiService {
 
   async fetchSubscriptions(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/subscriptions/', {headers: this.headers.headers, params: params });
-      toast.success('Assinaturas encontradas com sucesso');
-      return response;
+      return await this.api.get('/subscriptions/', {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -344,9 +319,7 @@ class ApiService {
 
   async fetchSubscriptionPlan(id: string | string[] | undefined, params: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/subscription_plans/' + id, {headers: this.headers.headers, params: params });
-      toast.success('Plano encontrado com sucesso');
-      return response;
+      return await this.api.get('/subscription_plans/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -354,9 +327,7 @@ class ApiService {
 
   async fetchSubscriptionPlans(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      const response = await this.api.get('/subscription_plans/', {headers: this.headers.headers, params: params });
-      toast.success('Planos encontrados com sucesso');
-      return response;
+      return await this.api.get('/subscription_plans/', {headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
