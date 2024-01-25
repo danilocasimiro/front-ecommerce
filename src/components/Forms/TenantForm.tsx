@@ -75,9 +75,8 @@ export default function TenantForm({ tenant }: { tenant: Tenant | null | undefin
       } else if (apiService ) {
         await apiService.storeTenant(formData);
       }
-      router.push('/tenants/lists');
+      router.push('/tenants/list');
     } catch (error: any) {
-      console.log('ERROR: ', error)
       toast.error(error);
     }
   };

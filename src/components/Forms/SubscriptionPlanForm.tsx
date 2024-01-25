@@ -20,7 +20,7 @@ export default function SubscriptionPlanForm({ subscriptionPlan }: { subscriptio
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    activation_months: 0,
+    activation_months: 1,
     price: 0
   });
 
@@ -79,7 +79,7 @@ export default function SubscriptionPlanForm({ subscriptionPlan }: { subscriptio
       } else if (apiService ) {
         await apiService.storeSubscriptionPlan(formData);
       }
-      router.push('/subscription-plans/lists');
+      router.push('/subscription-plans/list');
     } catch (error: any) {
       toast.error(error.response.data.error);
     }
@@ -165,14 +165,14 @@ export default function SubscriptionPlanForm({ subscriptionPlan }: { subscriptio
                       ><i className="bx bx-buildings"></i></span>
                       <input
                         type="text"
-                        id="basic-icon-default-product"
+                        id="basic-icon-default-subscription-plan"
                         className="form-control"
                         value={new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL',
                         }).format(formData.price / 100)}
                         onChange={handleAmountChange}
-                        aria-describedby="basic-icon-default-product"
+                        aria-describedby="basic-icon-default-subscription-plan"
                       />
                     </div>
                   </div>

@@ -69,8 +69,8 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
       } else if (apiService ) {
         await apiService.storeEmployee(formData);
       }
-      router.push('/employees/lists');
-    } catch (error: any) {
+      router.push('/employees/list');
+    } catch (error) {
       toast.error(error.response.data.error);
     }
   };
