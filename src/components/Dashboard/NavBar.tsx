@@ -62,7 +62,7 @@ export default function NavBar() {
               <button type="button" className="btn btn-danger ml-3" onClick={handleCompanyLogout}>Deslogar</button>
             </>
           )}
-          { user.type != 'Admin' && user.expiration_date && currentPath != '/subscription-plans/list' && (
+          { user.type == 'Tenant' && user.expiration_date && currentPath != '/subscription-plans/list' && (
             <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: <Date date={user.expiration_date}/></p>
           )}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
