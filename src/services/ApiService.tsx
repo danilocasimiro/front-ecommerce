@@ -79,6 +79,15 @@ class ApiService {
     }
   }
 
+  async sytemIsMaintenceMode(): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/system_configurations/maintenance_mode', { headers: this.headers.headers });
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      throw error;
+    }
+  }
+
   async updateSystemConfiguration(id: number, dataForm: SystemConfigurationDataForm): Promise<AxiosResponse<any>> {
     try {
       const response = await this.api.put('/system_configurations/' + id, dataForm, this.headers);
