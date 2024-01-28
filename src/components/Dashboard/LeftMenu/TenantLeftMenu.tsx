@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
 
-export default function UserLeftMenu() {
+export default function TenantLeftMenu() {
   const router = useRouter();
   const currentPath = router.pathname;
 

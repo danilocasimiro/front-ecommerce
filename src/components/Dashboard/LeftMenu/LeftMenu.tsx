@@ -3,8 +3,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/router';
 import CompanyLeftMenu from './CompanyLeftMenu';
 import { useSession } from 'next-auth/react';
-import UserLeftMenu from './UserLeftMenu';
 import AdminLeftMenu from './AdminLeftMenu';
+import TenantLeftMenu from './TenantLeftMenu';
+import EmployeeLeftMenu from './EmployeeLeftMenu';
 
 export default function LeftMenu() {
   const router = useRouter();
@@ -17,8 +18,10 @@ export default function LeftMenu() {
     leftMenuComponent = <CompanyLeftMenu />;
   } else if (session?.user?.type == 'Admin') {
     leftMenuComponent = <AdminLeftMenu />;
-  } else {
-    leftMenuComponent = <UserLeftMenu />;
+  } else if (session?.user?.type == 'Tenant') {
+    leftMenuComponent = <TenantLeftMenu />;
+  } else if (session?.user?.type == 'Employee') {
+    leftMenuComponent = <EmployeeLeftMenu />;
   }
 
   return (
