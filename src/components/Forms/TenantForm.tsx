@@ -72,13 +72,11 @@ export default function TenantForm({ tenant }: { tenant: Tenant | null | undefin
     try {
       if (apiService && tenant) {
         await apiService.updateTenant(tenant.id, formData);
-      } else if (apiService ) {
+      } else if (apiService) {
         await apiService.storeTenant(formData);
       }
       router.push('/tenants/list');
-    } catch (error: any) {
-      toast.error(error);
-    }
+    } catch (error: any) {}
   };
 
   if (!session) {

@@ -71,7 +71,7 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
       }
       router.push('/employees/list');
     } catch (error) {
-      toast.error(error.response.data.error);
+      window.location.reload();
     }
   };
 

@@ -12,48 +12,36 @@ import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
-import TenantForm from "@/components/Forms/TenantForm";
 import Loading from "@/components/Dashboard/Loading";
+import SystemConfigurationForm from "@/components/Forms/SystemConfigurationForm";
 
-interface Tenant {
+interface Configuration {
   id: number,
-  name: string,
-  user: {
-    email_address: string,
-    password: string,
-  }
-  address: {
-    street: string,
-    number: string,
-    neighborhood: string,
-    city: string,
-    state: string,
-    zip_code: string,
-  }
+  maintenance_mode: boolean,
+  grace_period_days: number
 }
 
-export default function TenantEdit() {
-  const [tenant, setTenant] = useState<Tenant | null | undefined>();
+export default function SystemConfigurationEdit() {
+  const [configuration, setConfiguration] = useState<Configuration | null | undefined>();
   const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (session) {
+      if (session && id) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchTenant(id, { expand: 'user,address'});
+          const result = await apiService.fetchSystemConfiguration(id);
 
-          setTenant(result.data);
+          setConfiguration(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados do cliente:', error);
         }
       }
     };
 
     fetchData();
-  }, [session]);
+  }, [session, id]);
 
   return (
     <>
@@ -68,7 +56,7 @@ export default function TenantEdit() {
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
-                      <TenantForm tenant={tenant} />
+                      <SystemConfigurationForm configuration={configuration} />
                     </Loading>
                   </div>
                   <Footer />

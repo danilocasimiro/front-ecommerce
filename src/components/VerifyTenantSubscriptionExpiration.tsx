@@ -13,13 +13,8 @@ const VerifyTenantSubscriptionExpiration: React.FC<VerifyTenantSubscriptionExpir
 
   useEffect(() => {
     if (session && session.user.type != 'Admin' && session.user.subscription_status != 'active') {
-      const expirationDate = new Date(session.user.expiration_date);
-      const currentDate = new Date();
-
-      if (expirationDate < currentDate || session.user.subscription_status != 'active') {
         toast.error('Necessário realizar a renovação de sua assinatura.');
         router.push('/store/subscription-plans/list');
-      }
     }
   }, [session, router]);
 

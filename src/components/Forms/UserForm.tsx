@@ -4,26 +4,28 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
-interface User {
-  id: number,
-  email_address: string,
-  password: string,
-  profile_id: string
-  profile: {
-    name: string
+interface Profile {
+  name: string
+  user: {
+    id: number,
+    email_address: string,
+    password: string,
+    profile_id: string
   }
 }
 
-export default function UserForm({ user }: { user: User | null | undefined }) {
+export default function UserForm({ profile }: { profile: Profile | null | undefined }) {
   const router = useRouter();
   const { data: session } = useSession();
-
+console.log('profile: ', profile)
   const [isAdmin, setIsAdmin] = useState(Boolean)
   const [apiService, setApiService] = useState<ApiService | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    email_address: '',
-    password: ''
+    user: {
+      email_address: '',
+      password: ''
+    }
   });
 
   useEffect(() => {
@@ -34,20 +36,25 @@ export default function UserForm({ user }: { user: User | null | undefined }) {
   }, [session]);
 
   useEffect(() => {
-    if (user) {
+    if (profile) {
       setFormData({
-        name: user?.profile?.name || '',
-        email_address: user?.email_address || '',
-        password: user?.password || ''
+        name: profile?.name || '',
+        user: {
+          email_address: profile?.user?.email_address || '',
+          password: profile?.user?.password || ''
+        }
       });
-      setIsAdmin(!user?.profile_id)
+      setIsAdmin(!profile?.user?.profile_id)
     }
-  }, [user]);
+  }, [profile]);
 
   const handleChange = (fieldName: string) => ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevData) => ({
       ...prevData,
-      [fieldName]: value
+      user: {
+        ...prevData.user,
+        [fieldName]: value
+      }
     }));
   };
 
@@ -59,9 +66,9 @@ export default function UserForm({ user }: { user: User | null | undefined }) {
     e.preventDefault();
 
     try {
-      if (apiService && user) {
-        await apiService.updateTenant(user.id, formData);
-        router.push('/profiles/' + user.id);
+      if (apiService && profile) {
+        await apiService.updateUser(profile.user.id, formData);
+        router.push('/profiles/' + profile.user.id);
       }
 
     } catch (error: any) {
@@ -115,7 +122,7 @@ export default function UserForm({ user }: { user: User | null | undefined }) {
                         id="basic-icon-default-user"
                         className="form-control"
                         placeholder="Eletrônicos"
-                        value={formData.email_address}
+                        value={formData.user.email_address}
                         onChange={handleEmailChange}
                         aria-label="email@example.com"
                         aria-describedby="basic-icon-default-user"

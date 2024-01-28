@@ -15,18 +15,18 @@ import { useRouter } from 'next/router';
 import UserForm from "@/components/Forms/UserForm";
 import Loading from "@/components/Dashboard/Loading";
 
-interface User {
-  id: number;
-  email_address: string,
-  password: string,
-  profile_id: string,
-  profile: {
-    name: string
-  }
+interface Profile {
+  name: string
+  user: {
+    id: number;
+    email_address: string,
+    password: string,
+    profile_id: string
+  },
 }
 
 export default function UserEdit() {
-  const [user, setUser] = useState<User | null | undefined>();
+  const [profile, setProfile] = useState<Profile | null | undefined>();
   const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
@@ -38,9 +38,9 @@ export default function UserEdit() {
           const apiService = new ApiService(session.token);
           const result = await apiService.fetchUser(id, { expand: 'profile'});
 
-          setUser(result.data);
+          setProfile(result.data);
         } catch (error) {
-          console.error('Erro ao obter dados do usuário:', error);
+          router.push('/dashboard');
         }
       }
     };
@@ -61,7 +61,7 @@ export default function UserEdit() {
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
-                      <UserForm user={user} />
+                      <UserForm profile={profile} />
                     </Loading>
                   </div>
                   <Footer />

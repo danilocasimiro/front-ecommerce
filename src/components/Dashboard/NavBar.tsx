@@ -112,19 +112,21 @@ export default function NavBar() {
                   </a>
                 </li>
                 { user.type == 'Tenant' && (
-                <li>
-                  <a className="dropdown-item" href="/subscriptions/list">
-                    <i className="bx bx-cog me-2"></i>
-                    <span className="align-middle">Minhas assinaturas</span>
-                  </a>
-                </li>
+                  <li>
+                    <a className="dropdown-item" href="/subscriptions/list">
+                      <i className="bx bx-cog me-2"></i>
+                      <span className="align-middle">Minhas assinaturas</span>
+                    </a>
+                  </li>
                 ) }
-                <li>
-                  <a className="dropdown-item" href="#">
-                    <i className="bx bx-cog me-2"></i>
-                    <span className="align-middle">Configuraçôes</span>
-                  </a>
-                </li>
+                { user.type == 'Admin' && (
+                  <li>
+                    <a className="dropdown-item"  href="/system-configurations/1">
+                      <i className="bx bx-cog me-2"></i>
+                      <span className="align-middle">Configuraçôes</span>
+                    </a>
+                  </li>
+                ) }
                 <li>
                   <div className="dropdown-divider"></div>
                 </li>

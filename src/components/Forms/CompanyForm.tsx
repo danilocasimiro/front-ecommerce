@@ -44,7 +44,7 @@ export default function CompanyForm({ company }: { company: Company | null | und
           city: company?.address?.city || '',
           state: company?.address?.state || '',
           zip_code: company?.address?.zip_code || '',
-        }
+        } 
       });
     }
   }, [company]);
@@ -58,6 +58,23 @@ export default function CompanyForm({ company }: { company: Company | null | und
     }));
   };
 
+  const handleAddressChange = (fieldName: string) => ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      address: {
+        ...prevData.address,
+        [fieldName]: value
+      }
+    }));
+  };
+
+  const handleStreetChange = handleAddressChange('street');
+  const handleNumberChange = handleAddressChange('number');
+  const handleNeightborhoodChange = handleAddressChange('neighborhood');
+  const handleCityChange = handleAddressChange('city');
+  const handleStateChange = handleAddressChange('state');
+  const handleZipCodeChange = handleAddressChange('zip_code');
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiService = new ApiService(session!.token);
@@ -70,26 +87,9 @@ export default function CompanyForm({ company }: { company: Company | null | und
       }
       router.push('/companies/list');
     } catch (error: any) {
-      toast.error(error.response.data.error);
+      window.location.reload();
     }
   };
-
-  const handleChange = (fieldName: string) => ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      address: {
-        ...prevData.address,
-        [fieldName]: value
-      }
-    }));
-  };
-
-  const handleStreetChange = handleChange('street');
-  const handleNumberChange = handleChange('number');
-  const handleNeightborhoodChange = handleChange('neighborhood');
-  const handleCityChange = handleChange('city');
-  const handleStateChange = handleChange('state');
-  const handleZipCodeChange = handleChange('zip_code');
 
   return (
     <>

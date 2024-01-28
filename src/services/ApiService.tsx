@@ -3,6 +3,14 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 interface CompanyDataForm {
   name: string;
+  address: {
+    street: string,
+    number: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    zip_code: string
+  }
 }
 interface TenantDataForm {
   name: string;
@@ -35,6 +43,17 @@ interface SubscriptionPlanForm {
   activation_months: number;
   price: number;
 }
+interface UserDataForm {
+  name: string;
+  user: {
+    email_address: string;
+    password: string;
+  } 
+}
+interface SystemConfigurationDataForm {
+  maintenance_mode: boolean,
+  grace_period_days: number
+}
 
 class ApiService {
   private api: AxiosInstance;
@@ -52,10 +71,40 @@ class ApiService {
     }
   }
 
+  async fetchSystemConfiguration(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/system_configurations/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSystemConfiguration(id: number, dataForm: SystemConfigurationDataForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.put('/system_configurations/' + id, dataForm, this.headers);
+      toast.success('Configuração atualizada com sucesso');
+      return response;
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      throw error;
+    }
+  }
+
   async fetchUser(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
     try {
       return await this.api.get('/users/' + id, {headers: this.headers.headers, params: params });
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUser(id: number, dataForm: UserDataForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.put('/users/' + id, dataForm, this.headers);
+      toast.success('Cliente atualizado com sucesso');
+      return response;
+    } catch (error: any) {
+      toast.error(error.response.data.error);
       throw error;
     }
   }
@@ -68,12 +117,12 @@ class ApiService {
     }
   }
 
-  async storeTenant(dataForm: TenantForm): Promise<AxiosResponse<any>> {
+  async storeTenant(dataForm: TenantForm): Promise<void> {
     try {
-      const response = await this.api.post('/tenants', dataForm, this.headers);
+      await this.api.post('/tenants', dataForm, this.headers);
       toast.success('Cliente criado com sucesso');
-      return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data.error);
       throw error;
     }
   }
@@ -91,7 +140,8 @@ class ApiService {
       const response = await this.api.put('/tenants/' + id, dataForm, this.headers);
       toast.success('Cliente atualizado com sucesso');
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data.error);
       throw error;
     }
   }
