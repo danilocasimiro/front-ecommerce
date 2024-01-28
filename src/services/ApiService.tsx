@@ -79,7 +79,7 @@ class ApiService {
     }
   }
 
-  async sytemIsMaintenceMode(): Promise<AxiosResponse<any>> {
+  async systemIsMaintenceMode(): Promise<AxiosResponse<any>> {
     try {
       return await this.api.get('/system_configurations/maintenance_mode', { headers: this.headers.headers });
     } catch (error: any) {
@@ -196,7 +196,6 @@ class ApiService {
       await this.api.put('/employees/' + id, dataForm, this.headers);
       toast.success('Colaborador atualizado com sucesso');
     } catch (error: any) {
-      console.log('error: ', error)
       toast.error(error.response.data.error);
     }
   }
@@ -214,6 +213,16 @@ class ApiService {
     try {
       const response = await this.api.post('/authenticate/company_auth/' + companyId, {}, this.headers);
       toast.success('Login realizado com sucesso');
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signOutCompany(): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/authenticate/logout_company_auth/', {}, this.headers);
+      toast.success('Logout realizado com sucesso');
       return response;
     } catch (error) {
       throw error;
@@ -246,13 +255,12 @@ class ApiService {
     }
   }
 
-  async updateCompany(id: string | string[] | undefined, dataForm: CompanyDataForm): Promise<AxiosResponse<any>> {
+  async updateCompany(id: string | string[] | undefined, dataForm: CompanyDataForm): Promise<void> {
     try {
-      const response = await this.api.put('/companies/' + id, dataForm, this.headers);
+      await this.api.put('/companies/' + id, dataForm, this.headers);
       toast.success('Empresa atualizada com sucesso');
-      return response;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   }
 

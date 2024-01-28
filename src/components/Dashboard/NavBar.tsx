@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useSession, signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Date from '../Formatters/Date';
+import ApiService from '@/services/ApiService';
 
 export default function NavBar() {
   const router = useRouter();
@@ -18,19 +19,29 @@ export default function NavBar() {
   };
 
   const handleCompanyLogout = async () => {
-    signIn("credentials", { 
-      callbackUrl: '/dashboard', 
-      jwt_token: session!.token, 
-      email_address: session!.user.email_address,
-      name: session!.user.name,
-      type: session!.user.type,
-      expiration_date: session!.user.expiration_date,
-      company_id: '',
-      company_name: '',
-      subscription_status: session!.user.subscription_status,
-      id: session!.user.id,
-      friendly_id: session!.user.friendly_id,
-    } )
+    const apiService = new ApiService(session!.token);
+    try {
+      var response = await apiService.signOutCompany();
+
+      const decodedToken = JSON.parse(atob(response.data.split('.')[1]));
+
+      signIn("credentials", {
+        callbackUrl: '/dashboard',
+        jwt_token: response.data,
+        email_address: decodedToken.user.email_address,
+        name: decodedToken.user.name,
+        type: decodedToken.user.type,
+        expiration_date: decodedToken.user.expiration_date,
+        company_id: decodedToken.user.company_id,
+        company_name: decodedToken.user.company_name,
+        subscription_status: decodedToken.user.subscription_status,
+        id: decodedToken.user.id,
+        friendly_id: decodedToken.user.friendly_id,
+      })
+
+    } catch (error: any) {
+      console.error(`Erro ao logar empresa: ${error.message}`);
+    }
   };
 
   if (status === 'loading') {
@@ -40,7 +51,7 @@ export default function NavBar() {
     router.push('/login');
     return null;
   }
-  
+
   const { user } = session;
 
   return (
@@ -56,14 +67,14 @@ export default function NavBar() {
         </div>
 
         <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-          { user.company_name != 'undefined' && user.company_name && currentPath != '/subscription-plans/list' && (
+          {user.company_name != 'null' && user.company_name && currentPath != '/subscription-plans/list' && (
             <>
               <p className="mt-3" style={{ marginRight: '2rem' }}>{user.company_name}</p>
               <button type="button" className="btn btn-danger ml-3" onClick={handleCompanyLogout}>Deslogar</button>
             </>
           )}
-          { user.type == 'Tenant' && user.expiration_date && currentPath != '/subscription-plans/list' && (
-            <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: <Date date={user.expiration_date}/></p>
+          {user.type == 'Tenant' && user.expiration_date && currentPath != '/subscription-plans/list' && (
+            <p className="mt-3" style={{ marginLeft: '2rem' }}>Sua conta expira em: <Date date={user.expiration_date} /></p>
           )}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
@@ -111,22 +122,22 @@ export default function NavBar() {
                     <span className="align-middle">Meu perfil</span>
                   </a>
                 </li>
-                { user.type == 'Tenant' && (
+                {user.type == 'Tenant' && (
                   <li>
                     <a className="dropdown-item" href="/subscriptions/list">
                       <i className="bx bx-cog me-2"></i>
                       <span className="align-middle">Minhas assinaturas</span>
                     </a>
                   </li>
-                ) }
-                { user.type == 'Admin' && (
+                )}
+                {user.type == 'Admin' && (
                   <li>
-                    <a className="dropdown-item"  href="/system-configurations/1">
+                    <a className="dropdown-item" href="/system-configurations/1">
                       <i className="bx bx-cog me-2"></i>
                       <span className="align-middle">Configuraçôes</span>
                     </a>
                   </li>
-                ) }
+                )}
                 <li>
                   <div className="dropdown-divider"></div>
                 </li>

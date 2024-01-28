@@ -85,7 +85,7 @@ export default function CompanyForm({ company }: { company: Company | null | und
       } else {
         await apiService.storeCompany(formData);
       }
-      router.push('/companies/list');
+      window.location.reload();
     } catch (error: any) {
       window.location.reload();
     }
