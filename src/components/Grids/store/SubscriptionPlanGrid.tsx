@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Money from '../../Formatters/Money';
-import ApiService from "@/services/ApiService";
-import { useSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
+import SubscriptionPlanModalGrid from './SubscriptionPlanModalGrid';
+import Money from '@/components/Formatters/Money';
 
 interface subscriptionPlans {
   id: number | undefined;
@@ -15,14 +12,6 @@ interface subscriptionPlans {
 
 export default function SubscriptionPlanGrid({ subscriptionPlans }: { subscriptionPlans: subscriptionPlans[] }) {
   const [expirationDates, setExpirationDates] = useState<string[]>([]);
-  const { data: session } = useSession();
-  const [currentSubscriptionPlan, setCurrentSubscriptionPlan] = useState({
-    id: 0,
-    name: '',
-    description: '',
-    activation_months: 0,
-    price: 0
-  });
 
   useEffect(() => {
     const fetchExpirationDates = async () => {
@@ -47,6 +36,14 @@ export default function SubscriptionPlanGrid({ subscriptionPlans }: { subscripti
     fetchExpirationDates();
   }, [subscriptionPlans]);
 
+  const [currentSubscriptionPlan, setCurrentSubscriptionPlan] = useState({
+    id: 0,
+    name: '',
+    description: '',
+    activation_months: 0,
+    price: 0
+  });
+  
   const handleSubscriptionPlanData = async (subscriptionPlan: subscriptionPlans) => {
     setCurrentSubscriptionPlan({
       id: subscriptionPlan?.id || 0,
@@ -57,242 +54,68 @@ export default function SubscriptionPlanGrid({ subscriptionPlans }: { subscripti
     });
   };
 
-  const handleSubmitSubscription = async (status: string) => {
-    const apiService = new ApiService(session!.token);
-    try {
-      await apiService.storeSubscription({
-        subscription_plan_id: currentSubscriptionPlan.id,
-        status: status
-      });
-
-      window.location.reload();
-    } catch (error: any) {
-      toast.error(error.response.data.error);
-    }
-  };
-
   return (
     <>
-      <h4 className="fw-bold py-3 mb-4"><span className="text-muted fw-light">Planos</span></h4>
-      <div className="row mb-5">
-        {subscriptionPlans?.map((subscriptionPlan, index) => (
-          <div key={subscriptionPlan.id} className="col-md-6 col-lg-4 mb-3">
-            <div className="card text-center">
-              <div className="card-header">Plano</div>
-              <div className="card-body">
-                <h5 className="card-title">{subscriptionPlan.name}</h5>
-                <p className="card-text">{subscriptionPlan.description}</p>
-                <p className="card-text"><Money value={subscriptionPlan.price} /></p>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exLargeModal"
-                  onClick={() => handleSubscriptionPlanData(subscriptionPlan)}
-                >
-                  Comprar
-                </button>
-              </div>
-              <div className="card-footer text-muted">
-                Até {expirationDates[index]}
-              </div>
-            </div>
-            <div className="modal fade" id="exLargeModal" tabIndex={-1} aria-hidden="true">
-              <div className="modal-dialog modal-xl" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="exampleModalLabel4">Carrinho</h5>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="row g-3">
-                      <div className="col-xl-6">
-                        <div className="nav-align-top mb-4">
-                          <div className="col-md mb-4 mb-md-0">
-                            <small className="text-light fw-semibold">Forma de pagamento</small>
-                            <div className="accordion mt-3" id="accordionExample">
-                              <div className="card accordion-item active">
-                                <h2 className="accordion-header" id="headingOne">
-                                  <button
-                                    type="button"
-                                    className="accordion-button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#accordionOne"
-                                    aria-expanded="true"
-                                    aria-controls="accordionOne"
-                                  >
-                                    Boleto
-                                    <Image
-                                      src="/img/boleto-icon.png"
-                                      alt="Vercel Logo"
-                                      className="w-px-40 h-auto rounded-circle"
-                                      width={70}
-                                      height={60}
-                                      priority
-                                      style={{ marginLeft: '1rem' }}
-                                    />
-                                  </button>
-                                </h2>
+      <div className="content-wrapper">
+        <div className="container-xxl flex-grow-1 container-p-y">
+          <div className="card overflow-hidden">
+            <div className="pb-sm-5 pb-2 rounded-top">
+              <div className="container py-5">
+                <h2 className="text-center mb-2 mt-0 mt-md-4">Escolha o plano certo para você</h2>
+                <p className="text-center pb-3"> Comece conosco - é perfeito para indivíduos e equipes. Escolha um plano de assinatura que atenda às suas necessidades. </p>
+                <div className="row mx-0 gy-3 px-lg-5">
+                  {subscriptionPlans?.map((subscriptionPlan, index) => (
+                    <>
+                      <div className="col-lg mb-md-0 mb-4">
+                        <SubscriptionPlanModalGrid subscriptionPlan={subscriptionPlan} currentSubscriptionPlan={currentSubscriptionPlan} />
+                        <div className="card border rounded shadow-none">
+                          <div className="card-body">
+                            <div className="my-3 pt-2 text-center">
+                              <img src="../../assets/img/icons/unicons/bookmark.png" alt="Starter Image" height="80" />
+                            </div>
+                            <h3 className="card-title text-center text-capitalize mb-1">{subscriptionPlan.name}</h3>
+                            <p className="text-center">{subscriptionPlan.description}</p>
+                            <div className="text-center">
+                              <div className="d-flex justify-content-center">
+                                <sup className="h6 pricing-currency mt-3 mb-0 me-1 text-primary">R$</sup>
+                                <h1 className="display-4 mb-0 text-primary">{<Money value={subscriptionPlan.price} />}</h1>
+                                <sub className="h6 pricing-duration mt-auto mb-2 text-muted fw-normal">/month</sub>
+                              </div>
+                            </div>
 
-                                <div
-                                  id="accordionOne"
-                                  className="accordion-collapse collapse show"
-                                  data-bs-parent="#accordionExample"
-                                >
-                                  <div className="accordion-body">
-                                    <p>Será enviado o boleto para pagamento em seu email</p>
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      onClick={() => handleSubmitSubscription('pending')}
-                                    >
-                                      Enviar
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="card accordion-item">
-                                <h2 className="accordion-header" id="headingTwo">
-                                  <button
-                                    type="button"
-                                    className="accordion-button collapsed"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#accordionTwo"
-                                    aria-expanded="false"
-                                    aria-controls="accordionTwo"
-                                  >
-                                    Pix
-                                    <Image
-                                      src="/img/pix-icon.png"
-                                      alt="Vercel Logo"
-                                      className="w-px-40 h-auto rounded-circle"
-                                      width={70}
-                                      height={60}
-                                      priority
-                                      style={{ marginLeft: '1rem' }}
-                                    />
-                                  </button>
-                                </h2>
-                                <div
-                                  id="accordionTwo"
-                                  className="accordion-collapse collapse"
-                                  aria-labelledby="headingTwo"
-                                  data-bs-parent="#accordionExample"
-                                >
-                                  <div className="accordion-body">
-                                    <p>Este é o código pix, a aprovação ocorrerá em minutos.</p>
-                                    <p>00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426655440000 5204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D</p>
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      onClick={() => handleSubmitSubscription('active')}
-                                    >
-                                      Concluir pedido
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="card accordion-item">
-                                <h2 className="accordion-header" id="headingThree">
-                                  <button
-                                    type="button"
-                                    className="accordion-button collapsed"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#accordionThree"
-                                    aria-expanded="false"
-                                    aria-controls="accordionThree"
-                                  >
-                                    Cartão de crédito
-                                    <div className="icons">
-                                      <img src="https://i.imgur.com/2ISgYja.png" width="30" />
-                                      <img src="https://i.imgur.com/W1vtnOV.png" width="30" />
-                                      <img src="https://i.imgur.com/35tC99g.png" width="30" />
-                                      <img src="https://i.imgur.com/2ISgYja.png" width="30" />
-                                    </div>
-                                  </button>
-                                </h2>
-                                <div
-                                  id="accordionThree"
-                                  className="accordion-collapse collapse"
-                                  aria-labelledby="headingThree"
-                                  data-bs-parent="#accordionExample"
-                                >
-                                  <div className="accordion-body">
-                                    <div className="card-body payment-card-body">
-                                      <span className="font-weight-normal card-text">Número do cartão</span>
-                                      <div className="input">
-                                        <i className="fa fa-credit-card"></i>
-                                        <input type="text" className="form-control" placeholder="0000 0000 0000 0000" />
-                                      </div>
-                                      <div className="row mt-3 mb-3">
-                                        <div className="col-md-6">
-                                          <span className="font-weight-normal card-text">Data de expiração</span>
-                                          <div className="input">
-                                            <i className="fa fa-calendar"></i>
-                                            <input type="text" className="form-control" placeholder="MM/YY" />
-                                          </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                          <span className="font-weight-normal card-text">CVC/CVV</span>
-                                          <div className="input">
-                                            <i className="fa fa-lock"></i>
-                                            <input type="text" className="form-control" placeholder="000" />
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <span className="text-muted certificate-text"><i className="fa fa-lock"></i> Your transaction is secured with ssl certificate</span>
-                                    </div>
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      onClick={() => handleSubmitSubscription('active')}
-                                    >
-                                      Concluir pedido
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
+                            <ul className="ps-3 my-4 list-unstyled">
+                              <li className="mb-2"><span className="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2"><i className="bx bx-check bx-xs"></i></span> 100 responses a month</li>
+                              <li className="mb-2"><span className="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2"><i className="bx bx-check bx-xs"></i></span> Unlimited forms and surveys</li>
+                              <li className="mb-2"><span className="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2"><i className="bx bx-check bx-xs"></i></span> Unlimited fields</li>
+                              <li className="mb-2"><span className="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2"><i className="bx bx-check bx-xs"></i></span> Basic form creation tools</li>
+                              <li className="mb-0"><span className="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2"><i className="bx bx-check bx-xs"></i></span> Up to 2 subdomains</li>
+                            </ul>
+
+                            <div className="card-footer text-muted">
+                              Valido até {expirationDates[index]}
                             </div>
+
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exLargeModal"
+                              onClick={() => handleSubscriptionPlanData(subscriptionPlan)}
+                            >
+                              Comprar
+                            </button>
                           </div>
                         </div>
                       </div>
-                      <div className="col-xl-6">
-                      <small className="text-light fw-semibold">Resumo do pedido</small>
-                        <div className="card mt-3">
-                          <div className="d-flex justify-content-between p-3">
-                            <div className="d-flex flex-column">
-                              <span>Produtos</span>
-                            </div>
-                          </div>
-                          <hr className="mt-0 line" />
-                          <div className="p-3">
-                            <div className="d-flex justify-content-between mb-2">
-                              <span>{currentSubscriptionPlan.name}</span>
-                              <span><Money value={currentSubscriptionPlan.price}/></span>
-                            </div>
-                          </div>
-                          <hr className="mt-0 line" />
-                          <div className="p-3 d-flex justify-content-between">
-                            <div className="d-flex flex-column">
-                              <span>Total a pagar: </span>
-                            </div>
-                            <span><Money value={currentSubscriptionPlan.price}/></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    </>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        ))}
-      </div >
+        </div>
+        <div className="content-backdrop fade"></div>
+      </div>
     </>
   );
 };
