@@ -24,7 +24,7 @@ export default function EmployeeList() {
       if (session) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchEmployees({ expand: 'employable' });
+          const result = await apiService.fetchEmployees({ expand: 'companies' });
 
           setEmployees(result.data);
         } catch (error) {

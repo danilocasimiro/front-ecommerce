@@ -5,11 +5,11 @@ import toast from 'react-hot-toast';
 interface Employee {
   id: number;
   name: string;
-  employable_type: string;
-  employable_id: string,
-  employable: {
-    name: string
-  }
+  companies: [
+    company: {
+      name: string
+    }
+  ]
 }
 
 export default function EmployeeGrid({ employees }: { employees: Employee[] }) {
@@ -17,7 +17,6 @@ export default function EmployeeGrid({ employees }: { employees: Employee[] }) {
 
   const handleDelete = async (employeeId: number) => {
     const userConfirmed = window.confirm('Você realmente deseja excluir este colaborador?');
-
     if (userConfirmed) {
       const apiService = new ApiService(session!.token);
       try {
@@ -42,7 +41,7 @@ export default function EmployeeGrid({ employees }: { employees: Employee[] }) {
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Nível</th>
+                  <th>Empresas</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -51,7 +50,7 @@ export default function EmployeeGrid({ employees }: { employees: Employee[] }) {
                   <tr key={employee.id}>
                     <td style={{ color: '#697a8d' }}>{employee.name}</td>
                     <td style={{ color: '#697a8d' }}>
-                      {employee.employable_type == 'Company' ? `Colaborador Empresa: ${employee.employable?.name}` : 'Colaborador Sistema'}</td>
+                      {employee.companies.map(objeto => objeto.name).join(' | ')} </td>
                     <td>
                       <div className="dropdown">
                         <button type="button" className="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

@@ -15,14 +15,19 @@ import { useRouter } from 'next/router';
 import EmployeeForm from "@/components/Forms/EmployeeForm";
 import Loading from "@/components/Dashboard/Loading";
 
+interface User {
+  email_address: string,
+  password: string
+}
+interface Company {
+  id: string,
+  name: string
+}
 interface Employee {
   id: number,
   name: string,
-  employable_type: string,
-  employable_id: string,
-  employable: {
-    name: string
-  }
+  user: User,
+  companies: Company[]
 }
 
 export default function EmployeeEdit() {
@@ -36,7 +41,7 @@ export default function EmployeeEdit() {
       if (session) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchEmployee(id);
+          const result = await apiService.fetchEmployee(id, { expand: 'companies,user'});
 
           setEmployee(result.data);
         } catch (error) {
@@ -57,7 +62,6 @@ export default function EmployeeEdit() {
               <LeftMenu />
               <div className="layout-page">
                 <NavBar />
-
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>

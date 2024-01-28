@@ -4,31 +4,42 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
+interface User {
+  email_address: string,
+  password: string
+}
+interface Company {
+  id: string,
+  name: string
+}
 interface Employee {
   id: number,
   name: string,
-  employable_type: string,
-  employable_id: string,
-  employable: {
-    name: string
-  }
+  user: User,
+  companies: Company[]
 }
 
 export default function EmployeeForm({ employee }: { employee: Employee | null | undefined }) {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const [options, setOptions] = useState<{ name: string; id: string }[]>([]);
+  const [data, setData] = useState<{ companies: Company[] }>({ companies: [] });
   const [apiService, setApiService] = useState<ApiService | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{ name: string, user: User, companies: Company[] }>({
     name: '',
-    employable_id: ''
+    user: {
+      email_address: '',
+      password: ''
+    },
+    companies: []
   });
 
   const fetchData = async (api: ApiService) => {
     try {
       const response = await api.fetchCompanies();
-      setOptions(response.data);
+      const data = await response.data;
+
+      setData({ companies: data });
     } catch (error: any) {
       toast.error(error.response.data.error);
     }
@@ -46,10 +57,13 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
     if (employee) {
       setFormData({
         name: employee?.name || '',
-        employable_id: employee?.employable_id || ''
+        user: {
+          email_address: employee?.user?.email_address || '',
+          password: employee?.user?.password || ''
+        },
+        companies: employee?.companies || []
       });
     }
-    
   }, [employee]);
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,27 +80,43 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
     try {
       if (apiService && employee) {
         await apiService.updateEmployee(employee.id, formData);
-      } else if (apiService ) {
+      } else if (apiService) {
         await apiService.storeEmployee(formData);
       }
       router.push('/employees/list');
-    } catch (error) {
-      window.location.reload();
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   };
 
-  if (!session) {
-    return <div>Carregando...</div>;
-  }
+  const isCompanySelected = (companyId: string) => {
+    return formData.companies.some((company) => company.id === companyId);
+  };
 
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.currentTarget;
+  const handleCheckboxChange = (companyId: string) => {
+    setFormData((prevFormData) => {
+      const isCompanySelected = prevFormData.companies.some((company) => company.id === companyId);
 
+      const updatedCompanies = isCompanySelected
+        ? prevFormData.companies.filter((company) => company.id !== companyId)
+        : [...prevFormData.companies, { id: companyId } as Company];
+
+      return { ...prevFormData, companies: updatedCompanies };
+    });
+  };
+
+  const handleChange = (fieldName: string) => ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
     setFormData((prevData) => ({
       ...prevData,
-      employable_id: value,
+      user: {
+        ...prevData.user,
+        [fieldName]: value
+      }
     }));
   };
+
+  const handleEmailChange = handleChange('email_address');
+  const handlePasswordChange = handleChange('password');
 
   return (
     <>
@@ -119,23 +149,59 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
                   </div>
                 </div>
                 <div className="row mb-3">
-                  <label htmlFor="exampleFormControlSelect1" className="col-sm-2 col-form-label">Empresa</label>
+                  <label className="col-sm-2 col-form-label" htmlFor="basic-icon-default-employee">Email</label>
                   <div className="col-sm-10">
                     <div className="input-group input-group-merge">
-                      <select
-                        className="form-select"
-                        id="exampleFormControlSelect1"
-                        aria-label="Default select example"
-                        value={formData.employable_id}
-                        onChange={handleSelectChange}
-                      >
-                        <option value="">Acesso a todas as empresas...</option>
-                        {options.map((option) => (
-                          <option key={option.id} value={option.id}>
-                            {option.name}
-                          </option>
-                        ))}
-                      </select>
+                      <span id="basic-icon-default-employee" className="input-group-text"
+                      ><i className="bx bx-buildings"></i></span>
+                      <input
+                        type="email"
+                        id="basic-icon-default-employee"
+                        className="form-control"
+                        placeholder="Eletrônicos"
+                        value={formData.user.email_address}
+                        onChange={handleEmailChange}
+                        aria-label="Eletrônicos"
+                        aria-describedby="basic-icon-default-employee"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <label className="col-sm-2 col-form-label" htmlFor="basic-icon-default-employee">Password</label>
+                  <div className="col-sm-10">
+                    <div className="input-group input-group-merge">
+                      <span id="basic-icon-default-employee" className="input-group-text"
+                      ><i className="bx bx-buildings"></i></span>
+                      <input
+                        type="password"
+                        id="basic-icon-default-employee"
+                        className="form-control"
+                        placeholder="Eletrônicos"
+                        onChange={handlePasswordChange}
+                        aria-label="Eletrônicos"
+                        aria-describedby="basic-icon-default-employee"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <label htmlFor="exampleFormControlSelect1" className="col-sm-2 col-form-label">Empresas</label>
+                  <div className="col-sm-10">
+                    <div className="col-md">
+                      {data?.companies?.map((company: Company) => (
+                        <div key={company.id} className="form-check mt-1">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            checked={isCompanySelected(company.id)}
+                            onChange={() => handleCheckboxChange(company.id)}
+                            value={company.id}
+                            id={company.id}
+                          />
+                          <label className="form-check-label" htmlFor="defaultCheck1"> {company.name} </label>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -147,7 +213,7 @@ export default function EmployeeForm({ employee }: { employee: Employee | null |
               </div>
             </form>
           </div>
-        </div>
+        </div >
       </div >
     </>
   );
