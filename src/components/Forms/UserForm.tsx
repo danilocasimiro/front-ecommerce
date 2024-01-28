@@ -17,7 +17,6 @@ interface Profile {
 export default function UserForm({ profile }: { profile: Profile | null | undefined }) {
   const router = useRouter();
   const { data: session } = useSession();
-console.log('profile: ', profile)
   const [isAdmin, setIsAdmin] = useState(Boolean)
   const [apiService, setApiService] = useState<ApiService | null>(null);
   const [formData, setFormData] = useState({
@@ -58,9 +57,16 @@ console.log('profile: ', profile)
     }));
   };
 
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.currentTarget;
+    setFormData((prevData) => ({
+      ...prevData,
+      name: value,
+    }));
+  };
+
   const handleEmailChange = handleChange('email_address');
   const handlePasswordChange = handleChange('password');
-  const handleNameChange = handleChange('name');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
