@@ -1,6 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import ApiService from '@/services/ApiService';
 
@@ -14,21 +14,23 @@ const Maintenance: React.FC<MaintenanceExpirationProps> = ({ children }) => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const verify = async () => {
       const apiService = new ApiService(session!.token);
       try {
-        const response = await apiService.sytemIsMaintenceMode();
+        const response = await apiService.systemIsMaintenceMode();
         
-        if (response.data == true && session!.user.type != 'Admin') {
-          router.push('/maintenance');
+        if (response.data == true && session!.user.type != 'Admin' &&  window.location.pathname != '/login') {
+          await signOut({ redirect: false }).then(() => {
+            router.push('/maintenance');
+          });
         }
       } catch (error: any) {
         toast.error(error.response?.data?.error || 'Erro desconhecido');
       }
     };
 
-    if (session) {
-      fetchData();
+    if (session && window.location.pathname != '/maintenance') {
+      verify();
     }
   }, [session, router]);
 
