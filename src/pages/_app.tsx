@@ -1,22 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
-import { loadScripts } from "@/components/scriptLoader";
+import { loadScripts } from "@/components/ScriptLoader";
 import { Toaster } from "react-hot-toast";
 import Maintenance from "@/components/Maintenance";
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    loadScripts()
+    loadScripts();
   }, []);
 
   return (
     <SessionProvider session={pageProps.session}>
       <Maintenance session={pageProps.session}>
-        <Toaster 
+        <Toaster
           position="top-center"
-          reverseOrder={false} 
+          reverseOrder={false}
           toastOptions={{
             duration: 7000
           }}

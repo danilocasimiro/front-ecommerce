@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import Footer from '@/components/Dashboard/Footer';
 import LeftMenu from '@/components/Dashboard/LeftMenu/LeftMenu';
 import NavBar from '@/components/Dashboard/NavBar';
-import AuthCheck from '@/components/authCheck';
+import AuthCheck from '@/components/AuthCheck';
 import "@/assets/vendor/fonts/boxicons.css"
 import "@/assets/vendor/css/core.css"
 import "@/assets/vendor/css/theme-default.css"

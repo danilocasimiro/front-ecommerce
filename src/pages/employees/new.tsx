@@ -8,7 +8,7 @@ import "@/assets/vendor/css/theme-default.css"
 import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
-import AuthCheck from "@/components/authCheck";
+import AuthCheck from "@/components/AuthCheck";
 import EmployeeForm from "@/components/Forms/EmployeeForm";
 import Loading from "@/components/Dashboard/Loading";
 

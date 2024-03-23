@@ -10,23 +10,19 @@ import "@/assets/vendor/css/theme-default.css"
 import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
-import ApiService from '../../services/ApiService';
 import { useRouter } from 'next/router';
-import UserForm from "@/components/Forms/UserForm";
 import Loading from "@/components/Dashboard/Loading";
+import ApiService from "@/services/ApiService";
+import EmailTemplateForm from "../../../components/Forms/EmailTemplateForm";
 
-interface Profile {
-  name: string
-  user: {
-    id: number;
-    email_address: string,
-    password: string,
-    profile_id: string
-  },
+interface EmailTemplate {
+  id: number,
+  subject: string,
+  body: string
 }
 
-export default function UserEdit() {
-  const [profile, setProfile] = useState<Profile | null | undefined>();
+export default function EmailTemplateEdit() {
+  const [emailTemplate, setEmailTemplate] = useState<EmailTemplate | null | undefined>();
   const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
@@ -36,11 +32,10 @@ export default function UserEdit() {
       if (session) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchUser(id, { expand: 'profile'});
-
-          setProfile(result.data);
+          const result = await apiService.fetchEmailTemplate(id);
+          setEmailTemplate(result.data);
         } catch (error) {
-          router.push('/dashboard');
+          router.push('/dashboard')
         }
       }
     };
@@ -61,7 +56,7 @@ export default function UserEdit() {
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
-                      <UserForm profile={profile} />
+                      <EmailTemplateForm emailTemplate={emailTemplate} />
                     </Loading>
                   </div>
                   <Footer />

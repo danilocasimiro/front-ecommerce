@@ -9,7 +9,7 @@ import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import CompanyForm from "@/components/Forms/CompanyForm";
-import AuthCheck from "@/components/authCheck";
+import AuthCheck from "@/components/AuthCheck";
 import Loading from "@/components/Dashboard/Loading";
 
 export default function CompanyNew() {

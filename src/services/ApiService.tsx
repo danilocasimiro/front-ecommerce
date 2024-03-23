@@ -54,6 +54,10 @@ interface SystemConfigurationDataForm {
   maintenance_mode: boolean,
   grace_period_days: number
 }
+interface EmailTemplateDataForm {
+  subject: string,
+  body: string
+}
 
 class ApiService {
   private api: AxiosInstance;
@@ -68,6 +72,32 @@ class ApiService {
         'Authorization': `Bearer ${token}`, // Adicione o token aos cabeçalhos
         'Content-Type': 'application/json', // Adapte conforme necessário
       },
+    }
+  }
+
+  async fetchEmailTemplates(params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/email_templates', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchEmailTemplate(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/email_templates/' + id, {headers: this.headers.headers, params: params });
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      throw error;
+    }
+  }
+
+  async updateEmailTemplate(id: number, dataForm: EmailTemplateDataForm): Promise<void> {
+    try {
+      await this.api.put('/email_templates/' + id, dataForm, this.headers);
+      toast.success('Template atualizado com sucesso');
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   }
 

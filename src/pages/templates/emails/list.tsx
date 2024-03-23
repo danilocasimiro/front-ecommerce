@@ -10,37 +10,24 @@ import "@/assets/vendor/css/theme-default.css"
 import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
-import ApiService from '../../services/ApiService';
-import { useRouter } from 'next/router';
-import UserForm from "@/components/Forms/UserForm";
+import ApiService from '../../../services/ApiService';
 import Loading from "@/components/Dashboard/Loading";
+import EmailTemplateGrid from "@/components/Grids/EmailTemplateGrid";
 
-interface Profile {
-  name: string
-  user: {
-    id: number;
-    email_address: string,
-    password: string,
-    profile_id: string
-  },
-}
-
-export default function UserEdit() {
-  const [profile, setProfile] = useState<Profile | null | undefined>();
+export default function TemplateList() {
+  const [emailTemplates, setEmailTemplates] = useState([]);
   const { data: session } = useSession();
-  const router = useRouter();
-  const { id } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
       if (session) {
         try {
           const apiService = new ApiService(session.token);
-          const result = await apiService.fetchUser(id, { expand: 'profile'});
+          const result = await apiService.fetchEmailTemplates();
 
-          setProfile(result.data);
+          setEmailTemplates(result.data);
         } catch (error) {
-          router.push('/dashboard');
+          console.error('Erro ao obter dados dos templates de email:', error);
         }
       }
     };
@@ -61,7 +48,7 @@ export default function UserEdit() {
                 <div className="content-wrapper">
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
-                      <UserForm profile={profile} />
+                      <EmailTemplateGrid emailTemplates={emailTemplates} />
                     </Loading>
                   </div>
                   <Footer />

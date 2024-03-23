@@ -56,6 +56,26 @@ export default function AdminLeftMenu() {
           </li>
         </ul>
       </li>
+      <li className={`menu-item ${currentPath.startsWith('/templates') ? 'active open' : ''}`}>
+        <a href="#" className="menu-link menu-toggle">
+          <i className="menu-icon tf-icons bx bx-lock-open-alt"></i>
+          <div className="text-truncate" data-i18n="Templates">Templates</div>
+        </a>
+        <ul className="menu-sub">
+          <li className={`menu-item ${currentPath.startsWith('/templates/emails') ? 'active open' : ''}`}>
+            <a href="#" className="menu-link menu-toggle">
+              <div className="text-truncate" data-i18n="Login">Emails</div>
+            </a>
+            <ul className="menu-sub">
+              <li className={`menu-item ${currentPath === '/templates/emails/list' ? 'active' : ''}`}>
+                <a href="/templates/emails/list" className="menu-link">
+                  <div className="text-truncate" data-i18n="Basic">Listar</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
     </>
   )
 }
