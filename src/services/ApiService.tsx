@@ -37,6 +37,9 @@ interface SubscriptionForm {
 interface EmployeeDataForm {
   name: string;
 }
+interface AffiliateDataForm {
+  name: string;
+}
 interface SubscriptionPlanForm {
   name: string;
   description: string;
@@ -238,6 +241,57 @@ class ApiService {
       toast.error(error.response.data.error);
     }
   }
+
+
+
+
+  async fetchAffiliates(params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/affiliates', {headers: this.headers.headers, params: params });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async storeAffiliate(dataForm: AffiliateDataForm): Promise<AxiosResponse<any>> {
+    try {
+      const response = await this.api.post('/affiliates', dataForm, this.headers);
+      toast.success('Afiliado criado com sucesso');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchAffiliate(id: string | string[] | undefined, params?: {}): Promise<AxiosResponse<any>> {
+    try {
+      return await this.api.get('/affiliates/' + id, {headers: this.headers.headers, params: params });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateAffiliate(id: number, dataForm: AffiliateDataForm): Promise<void> {
+    try {
+      await this.api.put('/affiliates/' + id, dataForm, this.headers);
+      toast.success('Afiliado atualizado com sucesso');
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+    }
+  }
+
+  async deleteAffiliate(id: number): Promise<void> {
+    try {
+      await this.api.delete('/affiliates/' + id, this.headers);
+      toast.success('Afiliado removido com sucesso');
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+    }
+  }
+
+
+
+
 
   async signInCompany(companyId: number): Promise<AxiosResponse<any>> {
     try {
