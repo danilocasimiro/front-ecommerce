@@ -2,7 +2,6 @@ import ApiService from '../../services/ApiService';
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import toast from 'react-hot-toast';
 
 interface Company {
   id: string,
@@ -82,10 +81,11 @@ export default function CompanyForm({ company }: { company: Company | null | und
     try {
       if (company) {
         await apiService.updateCompany(company.id, formData);
+        window.location.reload();
       } else {
         await apiService.storeCompany(formData);
+        router.push('/companies/list');
       }
-      window.location.reload();
     } catch (error: any) {
       window.location.reload();
     }

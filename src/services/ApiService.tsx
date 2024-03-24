@@ -65,7 +65,7 @@ class ApiService {
 
   constructor(token: string | null) {
     this.api = axios.create({
-      baseURL: 'http://localhost:3001/', // Substitua pela URL real da sua API
+      baseURL: 'http://localhost:3001/api/v1/', // Substitua pela URL real da sua API
     });
     this.headers = {
       headers: {
