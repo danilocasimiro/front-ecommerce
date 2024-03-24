@@ -12,6 +12,7 @@ interface Product {
   name: string;
   product_type: ProductType;
   price: number;
+  stock: string;
 }
 
 export default function ProductGrid({ products }: { products: Product[] }) {
@@ -46,6 +47,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                   <th>Nome</th>
                   <th>Tipo do produto</th>
                   <th>Preço</th>
+                  <th>Estoque</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -64,6 +66,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                         currency: 'BRL',
                       }).format(product.price / 100)}
                     </td>
+                    <td style={{ color: '#697a8d' }}>{product.stock}</td>
                     <td>
                       <div className="dropdown">
                         <button type="button" className="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -79,7 +82,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                     </td>
                   </tr>
                 ))}
-              </tbody>s
+              </tbody>
             </table>
           ) : (
             <div className="text-center">

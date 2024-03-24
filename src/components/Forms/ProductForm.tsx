@@ -8,6 +8,7 @@ interface Product {
   id: number,
   product_type_id: string,
   name: string,
+  stock: string,
   price: number
 }
 
@@ -20,7 +21,8 @@ export default function ProductForm({ product }: { product: Product | null | und
   const [formData, setFormData] = useState({
     name: '',
     product_type_id: '',
-    price: 0.00
+    price: 0.00,
+    stock: '0'
   });
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function ProductForm({ product }: { product: Product | null | und
         name: product?.name || '',
         product_type_id: product?.product_type_id || '',
         price: product?.price || 0.00,
+        stock: product?.stock || '',
       });
     }
   }, [product]);
@@ -63,6 +66,14 @@ export default function ProductForm({ product }: { product: Product | null | und
     setFormData((prevData) => ({
       ...prevData,
       name: value,
+    }));
+  };
+  const handleStockChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.currentTarget;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      stock: value,
     }));
   };
 
@@ -179,6 +190,23 @@ export default function ProductForm({ product }: { product: Product | null | und
                         }).format(formData.price / 100)}
                         onChange={handleAmountChange}
                         aria-label="Eletrônicos"
+                        aria-describedby="basic-icon-default-product"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <label className="col-sm-2 col-form-label" htmlFor="basic-icon-default-product">Estoque</label>
+                  <div className="col-sm-10">
+                    <div className="input-group input-group-merge">
+                      <span id="basic-icon-default-product" className="input-group-text"
+                      ><i className="bx bx-buildings"></i></span>
+                      <input
+                        type="number"
+                        id="basic-icon-default-product-stock"
+                        className="form-control"
+                        value={formData.stock}
+                        onChange={handleStockChange}
                         aria-describedby="basic-icon-default-product"
                       />
                     </div>

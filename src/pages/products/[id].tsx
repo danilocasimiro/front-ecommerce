@@ -20,6 +20,7 @@ interface Product {
   name: string;
   product_type_id: string;
   price: number;
+  stock: string;
 }
 
 export default function ProductEdit() {
