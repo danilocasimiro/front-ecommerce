@@ -29,7 +29,7 @@ export default function EmailTemplateGrid({ emailTemplates }: { emailTemplates: 
                           <i className="bx bx-dots-vertical-rounded"></i>
                         </button>
                         <div className="dropdown-menu">
-                          <a className="dropdown-item" href={`/templates/emails/${emailTemplate.id}`}>
+                          <a className="dropdown-item" href={`/email-templates/${emailTemplate.id}`}>
                             <i className="bx bx-edit-alt me-1"></i> Edit
                           </a>
                         </div>

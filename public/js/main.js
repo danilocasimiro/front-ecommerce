@@ -12,13 +12,15 @@ let menu, animate;
 
   let layoutMenuEl = document.querySelectorAll('#layout-menu');
   layoutMenuEl.forEach(function (element) {
-    menu = new Menu(element, {
-      orientation: 'vertical',
-      closeChildren: false
-    });
-    // Change parameter to true if you want scroll animation
-    window.Helpers.scrollToActive((animate = false));
-    window.Helpers.mainMenu = menu;
+    if (Menu) {
+      menu = new Menu(element, {
+        orientation: 'vertical',
+        closeChildren: false
+      });
+      // Change parameter to true if you want scroll animation
+      window.Helpers.scrollToActive((animate = false));
+      window.Helpers.mainMenu = menu;
+    }
   });
 
   // Initialize menu togglers and bind click on each

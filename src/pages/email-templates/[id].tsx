@@ -13,12 +13,13 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import { useRouter } from 'next/router';
 import Loading from "@/components/Dashboard/Loading";
 import ApiService from "@/services/ApiService";
-import EmailTemplateForm from "../../../components/Forms/EmailTemplateForm";
+import EmailTemplateForm from "../../components/Forms/EmailTemplateForm";
 
 interface EmailTemplate {
   id: number,
   subject: string,
-  body: string
+  body: string,
+  allow_variables: string
 }
 
 export default function EmailTemplateEdit() {

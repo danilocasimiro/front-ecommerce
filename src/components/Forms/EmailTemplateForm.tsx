@@ -52,7 +52,7 @@ export default function EmailTemplateForm({ emailTemplate }: { emailTemplate: Em
         await apiService.updateEmailTemplate(emailTemplate.id, formData);
       }
 
-      router.push('/templates/emails/list');
+      router.push('/email-templates/list');
     } catch (error: any) {
       toast.error(error.response.data.error);
     }

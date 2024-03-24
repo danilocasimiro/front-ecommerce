@@ -10,7 +10,7 @@ import "@/assets/vendor/css/theme-default.css"
 import "@/assets/css/demo.css"
 import "@/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
 import "@/assets/vendor/libs/apex-charts/apex-charts.css"
-import ApiService from '../../../services/ApiService';
+import ApiService from '../../services/ApiService';
 import Loading from "@/components/Dashboard/Loading";
 import EmailTemplateGrid from "@/components/Grids/EmailTemplateGrid";
 
