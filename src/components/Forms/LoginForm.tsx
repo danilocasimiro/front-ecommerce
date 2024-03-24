@@ -26,6 +26,7 @@ export default function LoginForm() {
           expiration_date: decodedToken.user.expiration_date,
           id: decodedToken.user.id,
           friendly_id: decodedToken.user.friendly_id,
+          menu: JSON.stringify(decodedToken.user.menu)
         })
         toast.success('Login realizado com sucesso');
         return response

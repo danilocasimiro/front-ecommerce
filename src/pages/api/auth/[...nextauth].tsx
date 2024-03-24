@@ -1,6 +1,15 @@
 import NextAuth from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 
+interface MenuItem {
+  id: string;
+  company: number;
+  icon: string;
+  label: string;
+  link: string;
+  parent_id: string;
+}
+
 interface ApiUser {
   id: string,
   email_address: string,
@@ -11,7 +20,8 @@ interface ApiUser {
   company_id: string | null,
   company_name: string | null,
   subscription_status: string | null,
-  friendly_id: string
+  friendly_id: string,
+  menu: MenuItem[]
 }
 
 export default NextAuth({
@@ -53,12 +63,15 @@ export default NextAuth({
         company_name: {
           type: "text"
         },
+        menu: {
+          type: "text"
+        },
       },
       authorize: async (credentials) => {
         if (!credentials) {
           return null;
         }
-
+        const parsedMenu: MenuItem[] = JSON.parse(credentials.menu);
         const user: ApiUser = {
           id: credentials.id,
           email_address: credentials.email_address,
@@ -70,6 +83,7 @@ export default NextAuth({
           expiration_date: credentials.expiration_date,
           company_name: credentials.company_name,
           friendly_id: credentials.friendly_id,
+          menu: parsedMenu,
         }
 
         return user;
@@ -88,8 +102,9 @@ export default NextAuth({
         token.subscription_status = user.subscription_status
         token.company_id = user.company_id
         token.company_name = user.company_name
+        token.menu = user.menu
       }
-   
+
       return token
     },
     async session({ session, token, user }) {
@@ -101,6 +116,7 @@ export default NextAuth({
       session.user.subscription_status = token.subscription_status
       session.user.company_id = token.company_id
       session.user.company_name = token.company_name
+      session.user.menu = token.menu
       return session
     }
   },

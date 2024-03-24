@@ -8,6 +8,15 @@ declare module 'next-auth' {
     user: User
   }
 
+  interface MenuItem {
+    id: string;
+    company: number;
+    icon: string;
+    label: string;
+    link: string;
+    parent_id: string;
+  }
+
   interface User {
     id: string;
     name: string;
@@ -19,5 +28,6 @@ declare module 'next-auth' {
     subscription_status: string | null;
     jwt_token: string;
     friendly_id: string;
+    menu: MenuItem[];
   }
 }

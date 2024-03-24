@@ -47,6 +47,7 @@ export default function CompanyGrid({ companies }: { companies: Company[] }) {
           subscription_status: decodedToken.user.subscription_status,
           id: decodedToken.user.id,
           friendly_id: decodedToken.user.friendly_id,
+          menu: JSON.stringify(decodedToken.user.menu)
         })
 
       } catch (error: any) {
