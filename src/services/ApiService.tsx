@@ -151,9 +151,9 @@ class ApiService {
     }
   }
 
-  async fetchTenants(): Promise<AxiosResponse<any>> {
+  async fetchTenants(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.get('/tenants', this.headers);
+      return await this.api.get('/tenants', { headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }

@@ -13,27 +13,52 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import TenantGrid from "@/components/Grids/TenantGrid";
 import Loading from "@/components/Dashboard/Loading";
+import Pagination from "@/components/Pagination";
 
+interface ExtraQuery {
+  before?: number;
+  after?: number;
+}
 
 export default function TenantList() {
   const [tenants, setTenants] = useState([]);
+  const [firstId, setFirstId] = useState();
+  const [lastId, setLastId] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (session) {
-        try {
-          const apiService = new ApiService(session.token);
-          const result = await apiService.fetchTenants();
+  const fetchData = async (extraQuery: ExtraQuery) => {
+    if (session) {
+      try {
+        const apiService = new ApiService(session.token);
+        const result = await apiService.fetchTenants({...extraQuery });
 
-          setTenants(result.data);
-        } catch (error) {
-          console.error('Erro ao obter dados do cliente:', error);
+        setTotalPages(result.headers['total-pages'])
+        setTenants(result.data);
+
+        if (result.data.length > 0) {
+          setFirstId(result.data[0].id)
+          setLastId(result.data[result.data.length - 1].id)
+          updateCurrentPage(extraQuery);
         }
+      } catch (error) {
+        console.error('Erro ao obter dados do cliente:', error);
       }
-    };
+    }
+  };
 
-    fetchData();
+  function updateCurrentPage(extraQuery: ExtraQuery) {
+    if (extraQuery.after) {
+      setCurrentPage(currentPage + 1);
+    }
+    if (extraQuery.before) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+
+  useEffect(() => {
+    fetchData({});
   }, [session]);
 
   return (
@@ -50,6 +75,14 @@ export default function TenantList() {
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
                       <TenantGrid tenants={tenants} />
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        firstId={firstId}
+                        lastId={lastId}
+                        fetchData={fetchData}
+                        quantityModels={tenants.length}
+                      />
                     </Loading>
                   </div>
                   <Footer />
