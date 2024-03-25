@@ -13,27 +13,52 @@ import "@/assets/vendor/libs/apex-charts/apex-charts.css"
 import ApiService from '../../services/ApiService';
 import SubscriptionPlanGrid from "@/components/Grids/SubscriptionPlanGrid";
 import Loading from "@/components/Dashboard/Loading";
+import Pagination from "@/components/Pagination";
 
+interface ExtraQuery {
+  before?: number;
+  after?: number;
+}
 
 export default function SubscriptionPlanList() {
   const [subscriptionPlans, setSubscriptionPlans] = useState([]);
+  const [firstId, setFirstId] = useState();
+  const [lastId, setLastId] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (session) {
-        try {
-          const apiService = new ApiService(session.token);
-          const result = await apiService.fetchSubscriptionPlans();
+  const fetchData = async (extraQuery: ExtraQuery) => {
+    if (session) {
+      try {
+        const apiService = new ApiService(session.token);
+        const result = await apiService.fetchSubscriptionPlans({ ...extraQuery });
 
-          setSubscriptionPlans(result.data);
-        } catch (error) {
-          console.error('Erro ao obter dados dos planos:', error);
+        setTotalPages(result.headers['total-pages'])
+        setSubscriptionPlans(result.data);
+
+        if (result.data.length > 0) {
+          setFirstId(result.data[0].id)
+          setLastId(result.data[result.data.length - 1].id)
+          updateCurrentPage(extraQuery);
         }
+      } catch (error) {
+        console.error('Erro ao obter dados dos planos:', error);
       }
-    };
+    }
+  };
 
-    fetchData();
+  function updateCurrentPage(extraQuery: ExtraQuery) {
+    if (extraQuery.after) {
+      setCurrentPage(currentPage + 1);
+    }
+    if (extraQuery.before) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+
+  useEffect(() => {
+    fetchData({});
   }, [session]);
 
   return (
@@ -50,6 +75,14 @@ export default function SubscriptionPlanList() {
                   <div className="container-xxl flex-grow-1 container-p-y">
                     <Loading>
                       <SubscriptionPlanGrid subscriptionPlans={subscriptionPlans} />
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        firstId={firstId}
+                        lastId={lastId}
+                        fetchData={fetchData}
+                        quantityModels={subscriptionPlans.length}
+                      />
                     </Loading>
                   </div>
                   <Footer />
