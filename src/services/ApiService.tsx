@@ -323,9 +323,9 @@ class ApiService {
     }
   }
 
-  async fetchCompanies(): Promise<AxiosResponse<any>> {
+  async fetchCompanies(params:{}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.get('/companies', this.headers);
+      return await this.api.get('/companies', { headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }

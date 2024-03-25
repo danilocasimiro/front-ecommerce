@@ -47,7 +47,6 @@ export default function ProductList() {
     }
   };
 
-
   function updateCurrentPage(extraQuery: ExtraQuery) {
     if (extraQuery.after) {
       setCurrentPage(currentPage + 1);
