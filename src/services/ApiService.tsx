@@ -368,9 +368,9 @@ class ApiService {
     }
   }
 
-  async fetchProductTypes(): Promise<AxiosResponse<any>> {
+  async fetchProductTypes(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.get('/product_types', this.headers);
+      return await this.api.get('/product_types', { headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
@@ -416,7 +416,7 @@ class ApiService {
 
   async fetchProducts(params?: {}): Promise<AxiosResponse<any>> {
     try {
-      return await this.api.get('/products', {headers: this.headers.headers, params: params });
+      return await this.api.get('/products', { headers: this.headers.headers, params: params });
     } catch (error) {
       throw error;
     }
